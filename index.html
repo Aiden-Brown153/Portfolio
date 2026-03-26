@@ -1,0 +1,2332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ============================================================
+     Aiden Brown — Junior Software Developer Portfolio
+     ============================================================
+     Sections:
+       1. <head>  — Meta, fonts, external scripts
+       2. <style> — CSS (grouped by component)
+       3. <body>  — Grain overlay, cursor, nav, hero, marquee,
+                    about, projects (CRT game), skills, contact,
+                    footer
+       4. <script>— GSAP animations, cursor, mobile menu,
+                    smooth scroll, contact form, game engine
+     ============================================================ -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aiden Brown — Junior Software Developer</title>
+
+  <!-- External Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&family=Share+Tech+Mono&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+
+    /* ─────────────────────────────────────────────
+       DESIGN TOKENS
+    ───────────────────────────────────────────── */
+    :root {
+      --bg:        #080808;
+      --surface:   #111111;
+      --border:    #1e1e1e;
+      --accent:    #00ff87;
+      --accent2:   #60efff;
+      --muted:     #444;
+      --text:      #e8e8e8;
+      --sub:       #888;
+      --crt-green: #00ff41;
+      --crt-dark:  #003010;
+    }
+
+
+    /* ─────────────────────────────────────────────
+       RESET & BASE
+    ───────────────────────────────────────────── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: var(--bg); scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Syne', sans-serif; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar       { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+
+    /* ─────────────────────────────────────────────
+       GLOBAL UTILITIES
+    ───────────────────────────────────────────── */
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.05;
+    }
+
+    .h-line   { width: 48px; height: 1px; background: var(--accent); }
+    .divider  { border: none; border-top: 1px solid var(--border); }
+    .fade-up  { opacity: 0; transform: translateY(30px); }
+
+    .acc { color: var(--accent); }
+    .dim { color: var(--muted); }
+
+
+    /* ─────────────────────────────────────────────
+       NOISE OVERLAY
+    ───────────────────────────────────────────── */
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 900;
+      pointer-events: none;
+      opacity: .04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+
+    /* ─────────────────────────────────────────────
+       CUSTOM CURSOR
+    ───────────────────────────────────────────── */
+    .cursor-dot,
+    .cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .cursor-dot  { width: 6px; height: 6px; background: var(--accent); }
+
+    .cursor-ring {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(0, 255, 135, .4);
+      transition: width .25s, height .25s, border-color .25s;
+    }
+
+    .cursor-ring.hov { width: 56px; height: 56px; border-color: var(--accent); }
+
+    @media (pointer: coarse) {
+      .cursor-dot,
+      .cursor-ring { display: none; }
+    }
+
+
+    /* ─────────────────────────────────────────────
+       NAVIGATION
+    ───────────────────────────────────────────── */
+    #navbar {
+      backdrop-filter: blur(16px);
+      background: rgba(8, 8, 8, .88);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow .3s;
+    }
+
+    .nav-link {
+      position: relative;
+      color: var(--sub);
+      font-family: 'DM Mono', monospace;
+      font-size: .8rem;
+      letter-spacing: .05em;
+      transition: color .25s;
+      text-decoration: none;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width .3s;
+    }
+
+    .nav-link:hover         { color: var(--accent); }
+    .nav-link:hover::after  { width: 100%; }
+
+
+    /* ─────────────────────────────────────────────
+       BUTTONS
+    ───────────────────────────────────────────── */
+    .btn-p {
+      background: var(--accent);
+      color: #000;
+      font-family: 'DM Mono', monospace;
+      font-size: .8rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-weight: 500;
+      border-radius: 2px;
+      padding: 13px 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform .2s, box-shadow .2s;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-p:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 28px rgba(0, 255, 135, .28);
+    }
+
+    .btn-g {
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: .8rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      padding: 12px 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color .25s, color .25s;
+      text-decoration: none;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .btn-g:hover { border-color: var(--accent); color: var(--accent); }
+
+
+    /* ─────────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────────── */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid       { grid-template-columns: 1fr; }
+      .hero-img-col    { display: none; }
+      .two-col         { grid-template-columns: 1fr !important; }
+    }
+
+    /* Availability badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      color: var(--sub);
+      letter-spacing: .08em;
+    }
+
+    .badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+      animation: bpulse 2s infinite;
+    }
+
+    @keyframes bpulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+
+    /* Hero typography */
+    .hero-title {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -.03em;
+    }
+
+    /* Stat lines */
+    .stat-line { border-left: 2px solid var(--accent); padding-left: 14px; }
+    .stat-line .num { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; }
+    .stat-line .lbl { font-family: 'DM Mono', monospace; font-size: .67rem; color: var(--sub); letter-spacing: .1em; text-transform: uppercase; }
+
+    /* Profile photo */
+    .profile-frame { position: relative; }
+
+    .profile-frame::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2), transparent 60%);
+      z-index: 0;
+    }
+
+    .profile-img { position: relative; z-index: 1; border-radius: 4px; overflow: hidden; aspect-ratio: 3/4; }
+    .profile-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Scroll hint animation */
+    @keyframes scrollPulse {
+      0%, 100% { opacity: .3; transform: scaleY(1); }
+      50%       { opacity: 1;  transform: scaleY(1.2); }
+    }
+
+
+    /* ─────────────────────────────────────────────
+       MARQUEE
+    ───────────────────────────────────────────── */
+    .marquee-track {
+      display: flex;
+      gap: 80px;
+      white-space: nowrap;
+      animation: marquee 20s linear infinite;
+    }
+
+    .marquee-item {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .m-dot { color: var(--accent); font-size: 1.4rem; }
+
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+
+    /* ─────────────────────────────────────────────
+       ABOUT — STAT COUNTERS
+    ───────────────────────────────────────────── */
+    .counter-block {
+      padding: 22px 24px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: var(--bg);
+    }
+
+
+    /* ─────────────────────────────────────────────
+       SKILLS
+    ───────────────────────────────────────────── */
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 30px;
+      transition: border-color .3s;
+    }
+
+    .skill-card:hover { border-color: var(--accent); }
+
+    .skill-icon {
+      width: 46px;
+      height: 46px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    .skill-chip {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--sub);
+      border: 1px solid var(--border);
+      padding: 5px 11px;
+      border-radius: 2px;
+      transition: border-color .2s, color .2s;
+      display: inline-block;
+    }
+
+    .skill-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+
+    /* ─────────────────────────────────────────────
+       CONTACT
+    ───────────────────────────────────────────── */
+    .contact-section { background: var(--surface); border-top: 1px solid var(--border); }
+
+    /* Form */
+    .form-group label {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--sub);
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 11px 15px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .9rem;
+      outline: none;
+      transition: border-color .25s;
+    }
+
+    .form-input:focus         { border-color: var(--accent); }
+    .form-input::placeholder  { color: var(--muted); }
+    textarea.form-input       { resize: none; }
+
+    /* Contact info items */
+    .ci-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ci-icon {
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    .ci-label {
+      font-family: 'DM Mono', monospace;
+      font-size: .66rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .ci-val  { font-size: .95rem; color: var(--text); transition: color .25s; text-decoration: none; display: block; }
+    a.ci-val:hover { color: var(--accent); }
+
+
+    /* ─────────────────────────────────────────────
+       GLITCH EFFECT
+    ───────────────────────────────────────────── */
+    .glitch:hover { animation: glitch .4s steps(2) 1; }
+
+    @keyframes glitch {
+      0%   { text-shadow: 2px 0 var(--accent2), -2px 0 var(--accent); }
+      25%  { text-shadow: -2px 2px var(--accent), 2px -2px var(--accent2); clip-path: inset(20% 0 60% 0); }
+      50%  { text-shadow: 2px -2px var(--accent2), -2px 2px var(--accent); }
+      75%  { clip-path: inset(60% 0 20% 0); }
+      100% { text-shadow: none; clip-path: none; }
+    }
+
+
+    /* ─────────────────────────────────────────────
+       CRT MONITOR — SHELL
+    ───────────────────────────────────────────── */
+    .monitor-shell { display: flex; flex-direction: column; align-items: center; position: relative; }
+
+    .bezel {
+      width: 100%;
+      background: linear-gradient(160deg, #1e1e1e 0%, #141414 50%, #0f0f0f 100%);
+      border-radius: 14px 14px 8px 8px;
+      border: 2px solid #252525;
+      box-shadow:
+        0 0 0 1px #080808,
+        0 40px 100px rgba(0, 0, 0, .95),
+        0 0 60px rgba(0, 255, 65, .04),
+        inset 0 1px 0 rgba(255, 255, 255, .05);
+      transition: all 0.3s ease;
+    }
+
+    /* Bezel — top bar */
+    .bezel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 22px 8px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .brand-txt { font-family: 'DM Mono', monospace; font-size: .55rem; letter-spacing: .22em; color: #222; text-transform: uppercase; }
+
+    .vents { display: flex; gap: 5px; }
+    .vent  { width: 20px; height: 4px; background: #0c0c0c; border-radius: 2px; box-shadow: inset 0 1px 2px rgba(0, 0, 0, .9); }
+
+    /* Power LED */
+    .crt-led {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: #00ff41;
+      box-shadow: 0 0 8px #00ff41, 0 0 16px rgba(0, 255, 65, .4);
+      animation: ledp 3s ease infinite;
+      flex-shrink: 0;
+    }
+
+    .crt-led.off { background: #111; box-shadow: none; animation: none; }
+
+    @keyframes ledp { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+
+    /* Bezel — bottom bar */
+    .bezel-bot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      padding: 10px 22px 14px;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .bdial {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #2c2c2c, #111);
+      border: 1px solid #222;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, .9);
+      flex-shrink: 0;
+    }
+
+    .bslider-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .bslider-lbl  { font-family: 'DM Mono', monospace; font-size: .5rem; color: #1e1e1e; letter-spacing: .1em; }
+    .bslider-trk  { width: 80px; height: 4px; background: #0c0c0c; border-radius: 2px; border: 1px solid #1a1a1a; position: relative; }
+    .bslider-th   { position: absolute; left: 55%; top: 50%; transform: translateY(-50%); width: 10px; height: 10px; background: radial-gradient(circle at 40% 35%, #343434, #181818); border-radius: 50%; border: 1px solid #262626; }
+
+    .pow-btn {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #1a3f22, #0a1a0c);
+      border: 1px solid #1c401c;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 255, 65, .18), inset 0 1px 0 rgba(255, 255, 255, .04);
+      transition: box-shadow .25s;
+    }
+
+    .pow-btn:hover { box-shadow: 0 0 20px rgba(0, 255, 65, .5); }
+
+    /* Monitor stand */
+    .neck {
+      width: 44px; height: 30px;
+      background: linear-gradient(to bottom, #161616, #101010);
+      margin: 0 auto;
+      border-radius: 0 0 4px 4px;
+      border: 1px solid #1a1a1a;
+      border-top: none;
+    }
+
+    .base {
+      width: 200px; height: 14px;
+      background: linear-gradient(to bottom, #171717, #0f0f0f);
+      margin: 0 auto;
+      border-radius: 0 0 12px 12px;
+      border: 1px solid #1a1a1a;
+      border-top: none;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .7);
+    }
+
+
+    /* ─────────────────────────────────────────────
+       CRT MONITOR — SCREEN SURROUND & EFFECTS
+    ───────────────────────────────────────────── */
+    .screen-surround {
+      margin: 14px 22px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 4px #0c0c0c,
+        0 0 0 6px #181818,
+        0 0 50px rgba(0, 255, 65, .08),
+        inset 0 0 40px rgba(0, 0, 0, .9);
+      position: relative;
+    }
+
+    .crt-screen {
+      position: relative;
+      background: #010801;
+      min-height: 600px;
+      overflow: hidden;
+      border-radius: 5px;
+      color: #00ff41;
+      font-family: 'VT323', 'Share Tech Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+
+    /* Scanlines */
+    .crt-scanlines {
+      position: absolute; inset: 0; z-index: 20; pointer-events: none;
+      background: repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, rgba(0, 0, 0, .3) 2px, rgba(0, 0, 0, .3) 4px);
+      border-radius: 5px;
+    }
+
+    /* Vignette */
+    .crt-vignette {
+      position: absolute; inset: 0; z-index: 21; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, .75) 100%);
+      border-radius: 5px;
+    }
+
+    /* Flicker */
+    .crt-flicker {
+      position: absolute; inset: 0; z-index: 22; pointer-events: none;
+      animation: cflicker 9s infinite;
+      background: rgba(0, 255, 65, .012);
+      mix-blend-mode: screen;
+    }
+
+    @keyframes cflicker {
+      0%, 18%, 20%, 24%, 53%, 57%, 100% { opacity: 1; }
+      19%, 23%, 54%, 56%                 { opacity: .5; }
+    }
+
+    /* Glare */
+    .crt-glare {
+      position: absolute; top: 0; left: 0; right: 0; height: 40%; pointer-events: none; z-index: 23;
+      background: linear-gradient(155deg, rgba(255, 255, 255, .028) 0%, transparent 55%);
+      border-radius: 5px 5px 0 0;
+    }
+
+    /* Power-off state */
+    .crt-screen.poff { background: #000 !important; cursor: pointer; }
+    .crt-screen.poff > *:not(.crt-scanlines):not(.crt-vignette):not(.crt-flicker):not(.crt-glare) { opacity: 0 !important; }
+    .crt-screen.poff::after {
+      content: '';
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 60%; height: 2px;
+      background: linear-gradient(to right, transparent, #00ff41, transparent);
+      box-shadow: 0 0 20px #00ff41;
+      animation: pcollapse .6s ease forwards;
+    }
+
+    @keyframes pcollapse { from { width: 60%; opacity: 1; } to { width: 0; opacity: 0; } }
+
+
+    /* ─────────────────────────────────────────────
+       CRT MONITOR — FULLSCREEN MODE
+    ───────────────────────────────────────────── */
+    .monitor-shell.fullscreen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 10000;
+      background: #000;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .monitor-shell.fullscreen .bezel            { width: 100%; height: 100%; max-width: 1600px; border-radius: 20px; }
+    .monitor-shell.fullscreen .screen-surround  { margin: 20px; height: calc(100% - 100px); }
+    .monitor-shell.fullscreen #gameContainer    { height: 100%; }
+    .monitor-shell.fullscreen .bezel-top,
+    .monitor-shell.fullscreen .bezel-bot        { padding: 15px 30px; }
+    .monitor-shell.fullscreen .crt-screen       { min-height: unset; height: 100%; }
+
+
+    /* ─────────────────────────────────────────────
+       GAME — CANVAS & CONTAINER
+    ───────────────────────────────────────────── */
+    #gameContainer { position: relative; width: 100%; height: 600px; overflow: hidden; }
+
+    #gameCanvas {
+      display: block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      width: 100%; height: 100%;
+      outline: none;
+      background: #001100;
+    }
+
+
+    /* ─────────────────────────────────────────────
+       GAME — FULLSCREEN BUTTON
+    ───────────────────────────────────────────── */
+    .fullscreen-btn {
+      position: absolute; top: 20px; right: 20px; z-index: 30;
+      background: rgba(0, 20, 0, .9);
+      border: 1px solid #004a14;
+      color: #00ff41;
+      padding: 8px 16px;
+      font-family: 'VT323', monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .fullscreen-btn:hover { background: rgba(0, 255, 65, .2); border-color: #00ff41; box-shadow: 0 0 15px rgba(0, 255, 65, .4); }
+
+
+    /* ─────────────────────────────────────────────
+       GAME — HUD OVERLAY
+    ───────────────────────────────────────────── */
+    .game-ui {
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 15;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 15px;
+      font-family: 'VT323', monospace;
+      text-shadow: 0 0 4px rgba(0, 255, 65, .5);
+    }
+
+    .ui-top    { display: flex; justify-content: space-between; align-items: flex-start; font-size: 1.2rem; }
+    .ui-bottom { display: flex; justify-content: space-between; align-items: flex-end;   font-size: 1rem; }
+
+    .stat-box  { background: rgba(0, 20, 0, .9); border: 1px solid #004a14; padding: 8px 12px; border-radius: 2px; }
+
+    .hp-bar, .xp-bar { display: inline-flex; align-items: center; gap: 6px; }
+    .bar-fill  { display: inline-block; font-family: 'VT323', monospace; letter-spacing: -1px; }
+
+    .controls-hint { color: #00aa28; font-size: 0.9rem; }
+
+    /* Message log */
+    .message-log {
+      position: absolute; bottom: 70px; left: 15px; right: 15px;
+      display: flex; flex-direction: column; gap: 4px;
+      pointer-events: none; z-index: 16;
+    }
+
+    .message {
+      background: rgba(0, 20, 0, .95);
+      border-left: 3px solid #00ff41;
+      padding: 6px 10px;
+      font-size: 1.1rem;
+      animation: msgSlide 0.3s ease;
+      max-width: 450px;
+    }
+
+    @keyframes msgSlide { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+
+    /* ─────────────────────────────────────────────
+       GAME — SCREENS (boot / title)
+    ───────────────────────────────────────────── */
+    .screen {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 5;
+      transition: opacity 0.3s;
+      background: #001100;
+    }
+
+    .screen.hidden { opacity: 0; pointer-events: none; }
+
+    /* Boot screen */
+    .boot-text { font-size: 1.3rem; line-height: 1.6; text-align: left; max-width: 600px; padding: 20px; font-family: 'VT323', monospace; }
+    .boot-line { opacity: 0; animation: bootReveal 0.12s ease forwards; margin: 3px 0; }
+    @keyframes bootReveal { to { opacity: 1; } }
+
+    .blink { animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Title screen */
+    .title-screen { text-align: center; }
+
+    .game-title { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 0 0 30px rgba(0, 255, 65, .8); letter-spacing: 6px; }
+    .subtitle   { font-size: 1.3rem; color: #00aa28; margin-bottom: 40px; }
+
+    .menu-option {
+      font-size: 1.4rem;
+      padding: 10px 30px;
+      margin: 8px 0;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .menu-option:hover,
+    .menu-option.selected { background: rgba(0, 255, 65, .15); border-color: #00ff41; text-shadow: 0 0 15px #00ff41; }
+
+    .menu-arrow { display: inline-block; margin-right: 10px; opacity: 0; }
+    .menu-option.selected .menu-arrow { opacity: 1; }
+
+
+    /* ─────────────────────────────────────────────
+       GAME — PROJECT DETAIL MODAL
+    ───────────────────────────────────────────── */
+    .project-modal {
+      position: absolute; inset: 0;
+      background: rgba(0, 8, 0, .97);
+      z-index: 25;
+      display: none;
+      flex-direction: column;
+      padding: 25px;
+      overflow-y: auto;
+    }
+
+    .project-modal.active { display: flex; animation: modalIn 0.3s ease; }
+
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #004a14;
+      padding-bottom: 12px;
+    }
+
+    .modal-title { font-size: 1.8rem; text-shadow: 0 0 15px rgba(0, 255, 65, .5); }
+
+    .modal-close {
+      background: transparent;
+      border: 1px solid #00ff41;
+      color: #00ff41;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-family: 'VT323', monospace;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover { background: #00ff41; color: #000; }
+
+    .project-image   { width: 100%; height: 220px; object-fit: cover; border: 2px solid #004a14; margin-bottom: 20px; filter: sepia(100%) hue-rotate(70deg) saturate(200%) contrast(1.1); }
+    .project-stats   { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; font-size: 1.1rem; }
+    .stat-row-p      { display: flex; justify-content: space-between; border-bottom: 1px solid #003010; padding: 5px 0; }
+    .stat-label      { color: #008820; }
+    .stat-value      { color: #00ff41; }
+    .project-desc    { font-size: 1.2rem; line-height: 1.6; color: #00cc33; margin-bottom: 25px; }
+    .project-links   { display: flex; gap: 15px; }
+
+    .game-btn {
+      background: #00ff41;
+      color: #000;
+      border: none;
+      padding: 10px 25px;
+      font-family: 'VT323', monospace;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+
+    .game-btn:hover     { box-shadow: 0 0 25px rgba(0, 255, 65, .6); transform: translateY(-2px); }
+    .game-btn.secondary { background: transparent; border: 1px solid #00ff41; color: #00ff41; }
+
+
+    /* ─────────────────────────────────────────────
+       GAME — LEVEL-UP MODAL
+    ───────────────────────────────────────────── */
+    .level-modal {
+      position: absolute; inset: 0;
+      background: rgba(0, 8, 0, .97);
+      z-index: 30;
+      display: none;
+      flex-direction: column; align-items: center; justify-content: center;
+      padding: 30px;
+    }
+
+    .level-modal.active { display: flex; animation: modalIn 0.3s ease; }
+
+    .level-title { font-size: 2.5rem; margin-bottom: 25px; text-align: center; text-shadow: 0 0 25px rgba(0, 255, 65, .8); }
+    .level-icon  { font-size: 3.5rem; margin-bottom: 20px; animation: float 2s ease infinite; }
+    .level-name  { font-size: 1.6rem; color: #00ff41; margin-bottom: 10px; }
+    .level-desc  { font-size: 1.2rem; color: #00aa28; text-align: center; max-width: 450px; margin-bottom: 30px; line-height: 1.5; }
+
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+
+    /* ─────────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-grid  { grid-template-columns: 1fr !important; }
+      .hero-img-col { display: none; }
+
+      #gameContainer { height: 400px; }
+      .game-title { font-size: 2rem; }
+      .message-log { bottom: 60px; }
+
+      .monitor-shell.fullscreen { padding: 10px; }
+      .monitor-shell.fullscreen .bezel-top,
+      .monitor-shell.fullscreen .bezel-bot { padding: 10px 15px; }
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+  <!-- Noise overlay -->
+  <div class="grain"></div>
+
+  <!-- Custom cursor (hidden on touch devices via CSS) -->
+  <div class="cursor-dot hidden md:block"></div>
+  <div class="cursor-ring hidden md:block"></div>
+
+
+  <!-- ══════════════════════════════════════════
+       NAV
+  ══════════════════════════════════════════ -->
+  <nav class="fixed top-0 w-full z-50" id="navbar">
+    <div style="max-width:1280px;margin:0 auto;padding:20px 24px;display:flex;justify-content:space-between;align-items:center">
+
+      <!-- Logo -->
+      <a href="#"
+         style="font-family:'DM Mono',monospace;font-size:.82rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#fff;text-decoration:none"
+         onmouseover="this.style.color='#00ff87'"
+         onmouseout="this.style.color='#fff'">
+        Aiden Brown<span style="color:#00ff87">_</span>
+      </a>
+
+      <!-- Desktop links -->
+      <div class="hidden md:flex items-center" style="gap:40px">
+        <a href="#about"    class="nav-link">About</a>
+        <a href="#projects" class="nav-link">Work</a>
+        <a href="#skills"   class="nav-link">Stack</a>
+        <a href="#contact"  class="nav-link">Contact</a>
+        <a href="CV.pdf" download class="btn-p" style="font-size:.72rem;padding:10px 22px">Download CV</a>
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button class="md:hidden" id="mobileMenuBtn" style="background:none;border:none;color:#fff;cursor:pointer">
+        <svg style="width:24px;height:24px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+    </div>
+
+    <!-- Mobile menu (toggled via JS) -->
+    <div class="md:hidden hidden" id="mobileMenu"
+         style="background:var(--surface);border-top:1px solid var(--border);padding:24px;display:flex;flex-direction:column;gap:20px">
+      <a href="#about"    class="nav-link" style="font-size:1.05rem">About</a>
+      <a href="#projects" class="nav-link" style="font-size:1.05rem">Work</a>
+      <a href="#skills"   class="nav-link" style="font-size:1.05rem">Stack</a>
+      <a href="#contact"  class="nav-link" style="font-size:1.05rem">Contact</a>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════ -->
+  <section style="position:relative;min-height:100vh;display:flex;align-items:center;padding:96px 24px 80px;overflow:hidden">
+
+    <!-- Background grid -->
+    <div style="position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.35"></div>
+
+    <!-- Radial accent glow -->
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 50%,rgba(0,255,135,.05) 0%,transparent 70%)"></div>
+
+    <div style="position:relative;z-index:10;max-width:1280px;margin:0 auto;width:100%" class="hero-grid">
+
+      <!-- Left — Text content -->
+      <div style="display:flex;flex-direction:column;gap:30px">
+
+        <div class="badge fade-up" id="a1">
+          <span class="dot"></span>Open to Opportunities
+        </div>
+
+        <h1 class="hero-title fade-up" id="a2">
+          Hi, I'm<br>
+          <span class="acc glitch">Aiden Brown</span><br>
+          <span class="dim">Dev Student</span>
+        </h1>
+
+        <p class="fade-up" id="a3" style="color:var(--sub);font-size:1.05rem;max-width:440px;line-height:1.8">
+          A motivated first-year Software Development student at CTU Training Solutions, building real-world projects ranging from client websites to full-stack AI-powered applications.
+        </p>
+
+        <div style="display:flex;flex-wrap:wrap;gap:14px" class="fade-up" id="a4">
+          <a href="#projects" class="btn-p">
+            View Work
+            <svg style="width:16px;height:16px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+          <a href="#contact" class="btn-g">Get in Touch</a>
+        </div>
+
+        <!-- Stats -->
+        <div style="display:flex;align-items:center;gap:28px;padding-top:4px" class="fade-up" id="a5">
+          <div class="stat-line"><div class="num">6+</div><div class="lbl">Projects Built</div></div>
+          <div class="stat-line"><div class="num">8mo</div><div class="lbl">Work Exp.</div></div>
+          <div class="stat-line"><div class="num">1st</div><div class="lbl">Year Student</div></div>
+        </div>
+
+        <!-- Social links -->
+        <div style="display:flex;align-items:center;gap:18px" class="fade-up" id="a6">
+          <a href="https://github.com/Aiden-Brown153" target="_blank" rel="noopener" aria-label="GitHub" style="color:var(--muted);transition:color .25s" onmouseover="this.style.color='#00ff87'" onmouseout="this.style.color='var(--muted)'"><svg style="width:20px;height:20px" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+          <a href="mailto:aidenbrown089@gmail.com" aria-label="Email" style="color:var(--muted);transition:color .25s" onmouseover="this.style.color='#00ff87'" onmouseout="this.style.color='var(--muted)'"><svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></a>
+          <div class="h-line" style="margin-left:6px"></div>
+          <span style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--muted)">Durbanville, ZA</span>
+        </div>
+
+      </div>
+
+      <!-- Right — Profile photo -->
+      <div class="hero-img-col fade-up" id="a7">
+        <div class="profile-frame">
+          <div class="profile-img">
+            <!-- Replace src with your actual photo -->
+            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&auto=format&fit=crop&q=80" alt="Aiden Brown">
+          </div>
+        </div>
+
+        <!-- Status card -->
+        <div style="position:relative;margin-top:-40px;margin-left:24px;background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:14px 18px;display:inline-flex;align-items:center;gap:12px;z-index:2">
+          <div style="width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)"></div>
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Status</div>
+            <div style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700">Studying @ CTU</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scroll hint -->
+    <div style="position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.4">
+      <span style="font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sub)">Scroll</span>
+      <div style="width:1px;height:38px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollPulse 2s ease infinite"></div>
+    </div>
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       MARQUEE
+  ══════════════════════════════════════════ -->
+  <div style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:18px 0;overflow:hidden">
+    <div class="marquee-track">
+      <!-- First set -->
+      <span class="marquee-item">HTML <span class="m-dot">✦</span></span>
+      <span class="marquee-item">CSS <span class="m-dot">✦</span></span>
+      <span class="marquee-item">JavaScript <span class="m-dot">✦</span></span>
+      <span class="marquee-item">Python <span class="m-dot">✦</span></span>
+      <span class="marquee-item">React <span class="m-dot">✦</span></span>
+      <span class="marquee-item">TypeScript <span class="m-dot">✦</span></span>
+      <span class="marquee-item">Node.js <span class="m-dot">✦</span></span>
+      <span class="marquee-item">Git <span class="m-dot">✦</span></span>
+      <span class="marquee-item">Tailwind CSS <span class="m-dot">✦</span></span>
+      <!-- Duplicate set (for seamless loop) -->
+      <span class="marquee-item">HTML <span class="m-dot">✦</span></span>
+      <span class="marquee-item">CSS <span class="m-dot">✦</span></span>
+      <span class="marquee-item">JavaScript <span class="m-dot">✦</span></span>
+      <span class="marquee-item">Python <span class="m-dot">✦</span></span>
+      <span class="marquee-item">React <span class="m-dot">✦</span></span>
+      <span class="marquee-item">TypeScript <span class="m-dot">✦</span></span>
+      <span class="marquee-item">Node.js <span class="m-dot">✦</span></span>
+      <span class="marquee-item">Git <span class="m-dot">✦</span></span>
+      <span class="marquee-item">Tailwind CSS <span class="m-dot">✦</span></span>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       ABOUT
+  ══════════════════════════════════════════ -->
+  <section id="about" style="padding:128px 24px">
+    <div style="max-width:1280px;margin:0 auto">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center" class="two-col">
+
+        <!-- Left — Bio -->
+        <div style="display:flex;flex-direction:column;gap:20px" class="fade-up">
+          <div class="section-label">// About</div>
+          <h2 class="section-title">Coding My Way<br>&amp; Levelling Up</h2>
+          <div class="h-line"></div>
+          <p style="color:var(--sub);font-size:1.05rem;line-height:1.85">
+            I'm a first-year Software Development student at CTU Training Solutions in Cape Town, building practical skills one project at a time. From client websites to full-stack AI dashboards, I enjoy turning ideas into working software.
+          </p>
+          <p style="color:var(--sub);font-size:1.05rem;line-height:1.85">
+            Before diving into code full-time, I spent 8 months as a Junior Clerk at PAX Accounting &amp; Bookkeeping — which gave me a strong eye for detail and a real appreciation for software that solves business problems. I bring that same discipline to every project I build.
+          </p>
+          <div style="margin-top:8px">
+            <a href="#contact" class="btn-p">
+              Let's Talk
+              <svg style="width:16px;height:16px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right — Stat counters -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" class="fade-up">
+          <div class="counter-block">
+            <div style="font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--accent)">6+</div>
+            <div style="font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Projects Built</div>
+          </div>
+          <div class="counter-block">
+            <div style="font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--accent)">8mo</div>
+            <div style="font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Work Experience</div>
+          </div>
+          <div class="counter-block">
+            <div style="font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--accent)">CTU</div>
+            <div style="font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Diploma In Progress</div>
+          </div>
+          <div class="counter-block">
+            <div style="font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--accent)">∞</div>
+            <div style="font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Coffee Consumed</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+
+  <!-- ══════════════════════════════════════════
+       PROJECTS — ROGUELIKE CRT GAME
+  ══════════════════════════════════════════ -->
+  <section id="projects" style="padding:128px 24px">
+    <div style="max-width:1280px;margin:0 auto">
+
+      <!-- Section header -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;flex-wrap:wrap;gap:16px" class="fade-up">
+        <div>
+          <div class="section-label">// Selected Work</div>
+          <h2 class="section-title">Projects</h2>
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">
+          WASD / Arrow Keys to Move • SPACE to Interact • F for Fullscreen
+        </div>
+      </div>
+
+      <!-- CRT Monitor -->
+      <div class="monitor-shell fade-up" id="monitorShell">
+        <div class="bezel">
+
+          <!-- Top bezel bar -->
+          <div class="bezel-top">
+            <div class="crt-led" id="crtLed"></div>
+            <div class="brand-txt">AIDENCORP &nbsp; MODEL ABX-2600 &nbsp; PHOSPHOR GREEN</div>
+            <div class="vents">
+              <div class="vent"></div>
+              <div class="vent"></div>
+              <div class="vent"></div>
+              <div class="vent"></div>
+            </div>
+          </div>
+
+          <!-- Screen -->
+          <div class="screen-surround">
+            <div class="crt-screen" id="crtScreen">
+
+              <!-- CRT post-processing layers -->
+              <div class="crt-scanlines"></div>
+              <div class="crt-vignette"></div>
+              <div class="crt-flicker"></div>
+              <div class="crt-glare"></div>
+
+              <!-- Fullscreen toggle -->
+              <button class="fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                </svg>
+                <span>FULLSCREEN</span>
+              </button>
+
+              <!-- Game canvas -->
+              <div id="gameContainer">
+                <canvas id="gameCanvas" tabindex="0"></canvas>
+
+                <!-- HUD overlay -->
+                <div class="game-ui" id="gameUI" style="display:none;">
+                  <div class="ui-top">
+                    <div class="stat-box">
+                      <div class="hp-bar">
+                        HP: <span class="bar-fill" id="hpDisplay">██████████</span>
+                        <span id="hpText">100/100</span>
+                      </div>
+                    </div>
+                    <div class="stat-box" style="text-align:right;">
+                      <div>LVL: <span id="levelDisplay">1</span></div>
+                      <div class="xp-bar">XP: <span class="bar-fill" id="xpDisplay">░░░░░░░░░░</span></div>
+                    </div>
+                  </div>
+
+                  <div class="message-log" id="messageLog"></div>
+
+                  <div class="ui-bottom">
+                    <div class="controls-hint" id="controlsHint">[WASD] Move • [SPACE] Interact • [M] Map • [F] Fullscreen</div>
+                    <div class="stat-box" id="inventoryDisplay">PROJECTS: <span id="skillList">0/6</span></div>
+                  </div>
+                </div>
+
+                <!-- Boot screen -->
+                <div class="screen" id="bootScreen">
+                  <div class="boot-text" id="bootText"></div>
+                </div>
+
+                <!-- Title screen -->
+                <div class="screen hidden" id="titleScreen">
+                  <div class="title-screen">
+                    <div class="game-title">◄ DEV QUEST ►</div>
+                    <div class="subtitle">~ Aiden's Portfolio Dungeon ~</div>
+
+                    <div style="margin-top:40px;">
+                      <div class="menu-option selected" data-index="0"><span class="menu-arrow">►</span>NEW GAME</div>
+                      <div class="menu-option"          data-index="1"><span class="menu-arrow">►</span>MANUAL</div>
+                    </div>
+
+                    <div style="margin-top:40px;font-size:0.9rem;color:#006820;">
+                      [ENTER] Select • [↑↓] Navigate • [F] Fullscreen
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Project detail modal -->
+                <div class="project-modal" id="projectModal">
+                  <div class="modal-header">
+                    <div class="modal-title" id="modalTitle">PROJECT NAME</div>
+                    <button class="modal-close" onclick="closeProjectModal()">[X]</button>
+                  </div>
+
+                  <img class="project-image" id="modalImage" src="" alt="">
+
+                  <div class="project-stats">
+                    <div class="stat-row-p"><span class="stat-label">TYPE:</span>       <span class="stat-value" id="modalType">FULLSTACK</span></div>
+                    <div class="stat-row-p"><span class="stat-label">STACK:</span>      <span class="stat-value" id="modalStack">React/Node</span></div>
+                    <div class="stat-row-p"><span class="stat-label">STATUS:</span>     <span class="stat-value" id="modalStatus">DEPLOYED</span></div>
+                    <div class="stat-row-p"><span class="stat-label">DIFFICULTY:</span> <span class="stat-value" id="modalDifficulty">★★★★☆</span></div>
+                  </div>
+
+                  <div class="project-desc" id="modalDesc">Project description goes here...</div>
+
+                  <div class="project-links">
+                    <a href="#" class="game-btn" id="modalLink" target="_blank">[ VIEW PROJECT ]</a>
+                    <button class="game-btn secondary" onclick="closeProjectModal()">[ BACK TO MAP ]</button>
+                  </div>
+                </div>
+
+                <!-- Level-up modal -->
+                <div class="level-modal" id="levelModal">
+                  <div class="level-title">★ LEVEL UP! ★</div>
+                  <div class="level-icon" id="levelIcon">⚔️</div>
+                  <div class="level-name" id="levelName">Skill Acquired!</div>
+                  <div class="level-desc" id="levelDesc">Description of the upgrade...</div>
+                  <button class="game-btn" onclick="closeLevelModal()">[ CONTINUE ]</button>
+                </div>
+
+              </div><!-- /#gameContainer -->
+            </div><!-- /.crt-screen -->
+          </div><!-- /.screen-surround -->
+
+          <!-- Bottom bezel bar -->
+          <div class="bezel-bot">
+            <div class="bdial"></div>
+            <div class="bslider-wrap">
+              <div class="bslider-lbl">BRIGHTNESS</div>
+              <div class="bslider-trk"><div class="bslider-th"></div></div>
+            </div>
+            <div class="bdial" style="width:20px;height:20px"></div>
+            <div class="pow-btn" id="powBtn" title="Power">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1a5a22" stroke-width="2.5">
+                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
+                <line x1="12" y1="2" x2="12" y2="12"/>
+              </svg>
+            </div>
+          </div>
+
+        </div><!-- /.bezel -->
+
+        <!-- Stand -->
+        <div class="neck"></div>
+        <div class="base"></div>
+
+      </div><!-- /.monitor-shell -->
+    </div>
+  </section>
+
+  <hr class="divider">
+
+
+  <!-- ══════════════════════════════════════════
+       SKILLS
+  ══════════════════════════════════════════ -->
+  <section id="skills" style="padding:128px 24px">
+    <div style="max-width:1280px;margin:0 auto">
+
+      <div style="text-align:center;max-width:600px;margin:0 auto 56px" class="fade-up">
+        <div class="section-label">// My Stack</div>
+        <h2 class="section-title">Skills &amp; Technologies</h2>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px">
+
+        <!-- Web Development -->
+        <div class="skill-card fade-up">
+          <div class="skill-icon" style="color:var(--accent)">
+            <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">01.</div>
+          <h3 style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:18px">Web Development</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="skill-chip">HTML</span>
+            <span class="skill-chip">CSS</span>
+            <span class="skill-chip">JavaScript</span>
+            <span class="skill-chip">React</span>
+            <span class="skill-chip">Vite</span>
+            <span class="skill-chip">Tailwind CSS</span>
+          </div>
+        </div>
+
+        <!-- Programming & Backend -->
+        <div class="skill-card fade-up">
+          <div class="skill-icon" style="color:var(--accent2)">
+            <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+            </svg>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">02.</div>
+          <h3 style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:18px">Programming</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="skill-chip">Python</span>
+            <span class="skill-chip">TypeScript</span>
+            <span class="skill-chip">Node.js</span>
+            <span class="skill-chip">Express</span>
+            <span class="skill-chip">REST APIs</span>
+            <span class="skill-chip">Anthropic SDK</span>
+          </div>
+        </div>
+
+        <!-- Tools & Professional -->
+        <div class="skill-card fade-up">
+          <div class="skill-icon" style="color:#ff6b6b">
+            <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+            </svg>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">03.</div>
+          <h3 style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:18px">Tools &amp; Professional</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="skill-chip">Git</span>
+            <span class="skill-chip">GitHub</span>
+            <span class="skill-chip">VS Code</span>
+            <span class="skill-chip">MS Office</span>
+            <span class="skill-chip">Sage &amp; Pastel</span>
+            <span class="skill-chip">Leadership</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+
+  <!-- ══════════════════════════════════════════
+       CONTACT
+  ══════════════════════════════════════════ -->
+  <section id="contact" class="contact-section" style="padding:128px 24px">
+    <div style="max-width:1280px;margin:0 auto">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px" class="two-col">
+
+        <!-- Left — Info -->
+        <div style="display:flex;flex-direction:column;gap:28px" class="fade-up">
+          <div class="section-label">// Contact</div>
+          <h2 class="section-title">Let's Build<br>Something.</h2>
+          <p style="color:var(--sub);font-size:1.05rem;line-height:1.8;max-width:400px">
+            Have a project in mind or want to collaborate? I'm always open to new opportunities, freelance work, or just a good conversation about tech.
+          </p>
+
+          <div>
+            <!-- Email -->
+            <div class="ci-item">
+              <div class="ci-icon">
+                <svg style="width:16px;height:16px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="ci-label">Email</div>
+                <a href="mailto:aidenbrown089@gmail.com" class="ci-val">aidenbrown089@gmail.com</a>
+              </div>
+            </div>
+
+            <!-- GitHub -->
+            <div class="ci-item">
+              <div class="ci-icon">
+                <svg style="width:16px;height:16px" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="ci-label">GitHub</div>
+                <a href="https://github.com/Aiden-Brown153" target="_blank" rel="noopener" class="ci-val">github.com/Aiden-Brown153</a>
+              </div>
+            </div>
+
+            <!-- Location -->
+            <div class="ci-item">
+              <div class="ci-icon">
+                <svg style="width:16px;height:16px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="ci-label">Location</div>
+                <div class="ci-val">Durbanville, Western Cape, ZA</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right — Form -->
+        <form id="contactForm" style="display:flex;flex-direction:column;gap:18px" class="fade-up">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" class="form-input" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-input" placeholder="john@example.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" class="form-input" placeholder="Project Inquiry" required>
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea rows="5" class="form-input" placeholder="Tell me about your project..." required></textarea>
+          </div>
+          <button type="submit" class="btn-p" id="submitBtn" style="justify-content:center">
+            Send Message
+            <svg style="width:16px;height:16px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════ -->
+  <footer style="background:#050505;border-top:1px solid var(--border);padding:36px 24px">
+    <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:20px">
+      <span style="font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase">
+        Aiden Brown<span style="color:var(--accent)">_</span>
+      </span>
+      <div style="display:flex;gap:28px">
+        <a href="https://github.com/Aiden-Brown153" target="_blank" rel="noopener" class="nav-link">GitHub</a>
+        <a href="mailto:aidenbrown089@gmail.com" class="nav-link">Email</a>
+      </div>
+      <p style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--muted)">© 2026 Aiden Brown</p>
+    </div>
+  </footer>
+
+
+  <!-- ══════════════════════════════════════════
+       JAVASCRIPT
+  ══════════════════════════════════════════ -->
+  <script>
+
+    /* ─────────────────────────────────────────────
+       GSAP — SCROLL ANIMATIONS
+    ───────────────────────────────────────────── */
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero entrance (staggered)
+    ['#a1','#a2','#a3','#a4','#a5','#a6','#a7'].forEach(function(sel, i) {
+      var el = document.querySelector(sel);
+      if (!el) return;
+      gsap.fromTo(el,
+        { y: 40, opacity: 0 },
+        { y: 0,  opacity: 1, duration: .9, delay: .1 + i * .12, ease: 'power3.out' }
+      );
+    });
+
+    // Scroll-triggered fade-ups (all other .fade-up elements)
+    document.querySelectorAll('.fade-up').forEach(function(el) {
+      if (el.id && /^a\d+$/.test(el.id)) return;
+      gsap.fromTo(el,
+        { y: 36, opacity: 0 },
+        {
+          y: 0, opacity: 1, duration: .8, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+        }
+      );
+    });
+
+
+    /* ─────────────────────────────────────────────
+       CUSTOM CURSOR
+    ───────────────────────────────────────────── */
+    var cdot  = document.querySelector('.cursor-dot');
+    var cring = document.querySelector('.cursor-ring');
+
+    if (cdot && cring) {
+      window.addEventListener('mousemove', function(e) {
+        cdot.style.left = cring.style.left = e.clientX + 'px';
+        cdot.style.top  = e.clientY + 'px';
+        cring.animate(
+          { top: e.clientY + 'px', left: e.clientX + 'px' },
+          { duration: 400, fill: 'forwards' }
+        );
+      });
+
+      document.querySelectorAll('a, button').forEach(function(el) {
+        el.addEventListener('mouseenter', function() { cring.classList.add('hov'); });
+        el.addEventListener('mouseleave', function() { cring.classList.remove('hov'); });
+      });
+    }
+
+
+    /* ─────────────────────────────────────────────
+       MOBILE MENU
+    ───────────────────────────────────────────── */
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+      var m = document.getElementById('mobileMenu');
+      m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+
+    /* ─────────────────────────────────────────────
+       SMOOTH SCROLL
+    ───────────────────────────────────────────── */
+    document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+      a.addEventListener('click', function(e) {
+        var href = a.getAttribute('href');
+        if (href === '#') return;
+        e.preventDefault();
+        var target = document.querySelector(href);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.getElementById('mobileMenu').style.display = 'none';
+      });
+    });
+
+
+    /* ─────────────────────────────────────────────
+       NAVBAR — SCROLL SHADOW
+    ───────────────────────────────────────────── */
+    window.addEventListener('scroll', function() {
+      document.getElementById('navbar').style.boxShadow =
+        window.pageYOffset > 80 ? '0 1px 40px rgba(0,0,0,.6)' : 'none';
+    });
+
+
+    /* ─────────────────────────────────────────────
+       CONTACT FORM
+    ───────────────────────────────────────────── */
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var btn = document.getElementById('submitBtn');
+      btn.textContent = '✓ Message Sent!';
+      btn.style.background = '#1a7f4a';
+      setTimeout(function() {
+        btn.innerHTML = 'Send Message <svg style="width:16px;height:16px;display:inline;margin-left:8px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>';
+        btn.style.background = '';
+        e.target.reset();
+      }, 3000);
+    });
+
+
+    /* ─────────────────────────────────────────────
+       ROGUELIKE GAME ENGINE
+    ───────────────────────────────────────────── */
+    (function() {
+
+      /* ── Constants ── */
+      const TILE_SIZE  = 24;
+      const MAP_WIDTH  = 40;
+      const MAP_HEIGHT = 25;
+
+      const COLORS = {
+        bg:          '#001100',
+        wall:        '#003300',
+        wallTop:     '#004400',
+        floor:       '#001800',
+        player:      '#00ff41',
+        playerGlow:  'rgba(0,255,65,0.3)',
+        enemy:       '#ff3333',
+        enemyGlow:   'rgba(255,51,51,0.3)',
+        project:     '#00ffff',
+        projectGlow: 'rgba(0,255,255,0.5)',
+        upgrade:     '#ffaa00',
+        fog:         '#000500',
+        text:        '#00ff41'
+      };
+
+
+      /* ── Data ── */
+      const PROJECTS = [
+        {
+          id: 1, name: 'AI AGENT DASHBOARD', type: 'FULLSTACK',
+          stack: 'React / Vite / TypeScript / Express', status: 'IN DEVELOPMENT', difficulty: 5,
+          desc: 'Full-stack AI agent command centre built with React, Vite and the Anthropic Claude API. Features live code preview, multi-agent support, and real-time generation.',
+          img: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&auto=format&fit=crop&q=80',
+          link: 'https://github.com/Aiden-Brown153', x: 5, y: 5
+        },
+        {
+          id: 2, name: 'LIFE ASSISTANT APP', type: 'PYTHON APP',
+          stack: 'Python / Tkinter', status: 'COMPLETE', difficulty: 2,
+          desc: 'Personal productivity desktop app with finance tracking and daily habit management modules built entirely in Python.',
+          img: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&auto=format&fit=crop&q=80',
+          link: 'https://github.com/Aiden-Brown153', x: 15, y: 8
+        },
+        {
+          id: 3, name: 'NEXABOOKS WEBSITE', type: 'CLIENT SITE',
+          stack: 'HTML / CSS / JavaScript', status: 'DELIVERED', difficulty: 2,
+          desc: 'Professional website designed and built for a bookkeeping and accounting firm. Responsive layout with services, pricing, and contact sections.',
+          img: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&auto=format&fit=crop&q=80',
+          link: 'https://github.com/Aiden-Brown153', x: 25, y: 12
+        },
+        {
+          id: 4, name: 'MRDUCT WEBSITE', type: 'CLIENT SITE',
+          stack: 'HTML / CSS / JavaScript', status: 'DELIVERED v3', difficulty: 3,
+          desc: 'Multi-version website for MrDuct & The RDJ Group, an HVAC and construction company in Cape Town. Iterated across 3 versions based on client feedback.',
+          img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&auto=format&fit=crop&q=80',
+          link: 'https://github.com/Aiden-Brown153', x: 32, y: 6
+        },
+        {
+          id: 5, name: 'BACH ELECTRICAL', type: 'CLIENT SITE',
+          stack: 'HTML / CSS / JavaScript', status: 'DELIVERED', difficulty: 2,
+          desc: 'Clean, professional website for BaCH Electrical, showcasing their electrical services and making it easy for clients to get in touch.',
+          img: 'https://images.unsplash.com/photo-1621905251189-08b45249be50?w=800&auto=format&fit=crop&q=80',
+          link: 'https://github.com/Aiden-Brown153', x: 8, y: 18
+        },
+        {
+          id: 6, name: 'AUTO REPAIRS SITE', type: 'CLIENT SITE',
+          stack: 'HTML / CSS / JavaScript', status: 'DELIVERED', difficulty: 1,
+          desc: 'Responsive website for a local auto repair shop. Features services listing, location info, and a contact form to bring in new customers.',
+          img: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&auto=format&fit=crop&q=80',
+          link: 'https://github.com/Aiden-Brown153', x: 28, y: 20
+        }
+      ];
+
+      const SKILLS = [
+        { name: 'Web Dev Basics',    icon: '🌐', desc: 'HTML, CSS & JavaScript proficiency' },
+        { name: 'Python Power',      icon: '🐍', desc: 'Scripting and desktop app development' },
+        { name: 'React Skills',      icon: '⚛️', desc: 'Component architecture and state management' },
+        { name: 'API Integration',   icon: '🔌', desc: 'REST APIs and Anthropic SDK usage' },
+        { name: 'Version Control',   icon: '📦', desc: 'Git workflow and GitHub collaboration' },
+        { name: 'Problem Solving',   icon: '🧠', desc: 'Critical thinking and debugging skills' }
+      ];
+
+
+      /* ── State ── */
+      let canvas, ctx;
+      let gameState = 'boot';
+      let player    = { x: 2, y: 2, hp: 100, maxHp: 100, xp: 0, maxXp: 100, level: 1, skills: [] };
+      let map       = [];
+      let visited   = [];
+      let enemies   = [];
+      let particles = [];
+      let frameCount  = 0;
+      let camera      = { x: 0, y: 0 };
+      let isPowered   = true;
+      let isFullscreen = false;
+      let gameLoopId  = null;
+      let booted      = false;
+
+
+      /* ─── Initialization ─── */
+
+      function initGame() {
+        canvas = document.getElementById('gameCanvas');
+        if (!canvas) return;
+
+        ctx = canvas.getContext('2d');
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        generateMap();
+        spawnEnemies();
+
+        document.addEventListener('keydown', handleInput, true);
+        canvas.addEventListener('click', () => canvas.focus());
+
+        document.getElementById('fullscreenBtn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleFullscreen();
+        });
+
+        document.getElementById('powBtn').addEventListener('click', togglePower);
+        document.addEventListener('fullscreenchange',       handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+        runBootSequence();
+        startGameLoop();
+      }
+
+      function resizeCanvas() {
+        const container = document.getElementById('gameContainer');
+        if (!container || !canvas) return;
+        const rect = container.getBoundingClientRect();
+        const dpr  = window.devicePixelRatio || 1;
+        canvas.width       = rect.width  * dpr;
+        canvas.height      = rect.height * dpr;
+        canvas.style.width  = rect.width  + 'px';
+        canvas.style.height = rect.height + 'px';
+        if (ctx) ctx.scale(dpr, dpr);
+      }
+
+
+      /* ─── Map Generation ─── */
+
+      function generateMap() {
+        map     = [];
+        visited = [];
+
+        for (let y = 0; y < MAP_HEIGHT; y++) {
+          map[y]     = [];
+          visited[y] = [];
+
+          for (let x = 0; x < MAP_WIDTH; x++) {
+            let isWall = true;
+
+            if (y === 12 || x === 20) isWall = false;
+
+            PROJECTS.forEach(p => {
+              if (Math.abs(x - p.x) <= 2 && Math.abs(y - p.y) <= 2) isWall = false;
+            });
+
+            if (Math.random() < 0.03) {
+              for (let ry = -2; ry <= 2; ry++) {
+                for (let rx = -2; rx <= 2; rx++) {
+                  const ny = y + ry, nx = x + rx;
+                  if (ny >= 0 && ny < MAP_HEIGHT && nx >= 0 && nx < MAP_WIDTH) {
+                    if (Math.random() < 0.7) {
+                      if (!map[ny]) map[ny] = [];
+                      map[ny][nx] = 0;
+                    }
+                  }
+                }
+              }
+            }
+
+            if (x <= 3 && y <= 3) isWall = false;
+
+            map[y][x]     = isWall ? 1 : 0;
+            visited[y][x] = false;
+          }
+        }
+      }
+
+      function spawnEnemies() {
+        enemies = [];
+        for (let i = 0; i < 10; i++) {
+          let x, y;
+          do {
+            x = Math.floor(Math.random() * MAP_WIDTH);
+            y = Math.floor(Math.random() * MAP_HEIGHT);
+          } while (
+            map[y][x] === 1 ||
+            (Math.abs(x - player.x) < 5 && Math.abs(y - player.y) < 5) ||
+            PROJECTS.some(p => Math.abs(x - p.x) < 2 && Math.abs(y - p.y) < 2)
+          );
+          enemies.push({ x, y, hp: 3, maxHp: 3, type: 'bug', moveTimer: 0 });
+        }
+      }
+
+
+      /* ─── Boot & Title Sequences ─── */
+
+      function runBootSequence() {
+        const bootText = document.getElementById('bootText');
+        if (!bootText) return;
+
+        const lines = [
+          'AIDENCORP BIOS v1.0.0',
+          '══════════════════════════════════════════',
+          'CPU: STUDENT-ENGINE @ CTU Training Solutions',
+          'MEM: 640K OK  [████████████████] 100%',
+          'GPU: PIXEL-RENDERER v2.0 ........ [OK]',
+          'SND: 8-BIT SYNTHESIZER .......... [OK]',
+          'INPUT: KEYBOARD DETECTED ........ [OK]',
+          '',
+          'LOADING ROGUELIKE ENGINE...',
+          'GENERATING DUNGEON...',
+          'SPAWNING PROJECTS...',
+          'CALIBRATING DIFFICULTY...',
+          '',
+          'LOADING [████████████████████] 100%',
+          '',
+          '▶ PRESS ANY KEY TO START_'
+        ];
+
+        let lineIndex = 0;
+
+        function addLine() {
+          if (lineIndex < lines.length) {
+            const div       = document.createElement('div');
+            div.className   = 'boot-line';
+            div.textContent = lines[lineIndex];
+            bootText.appendChild(div);
+            lineIndex++;
+            setTimeout(addLine, lineIndex === lines.length - 1 ? 600 : 120);
+          } else {
+            setTimeout(() => {
+              document.addEventListener('keydown', onBootKey, { once: true });
+              document.addEventListener('click',   onBootKey, { once: true });
+            }, 200);
+          }
+        }
+
+        addLine();
+      }
+
+      function onBootKey() {
+        if (booted) return;
+        booted = true;
+        document.getElementById('bootScreen').classList.add('hidden');
+        document.getElementById('titleScreen').classList.remove('hidden');
+        gameState = 'title';
+        initTitleMenu();
+      }
+
+      function initTitleMenu() {
+        let selected = 0;
+        const options = document.querySelectorAll('#titleScreen .menu-option');
+
+        function updateMenu() {
+          options.forEach((opt, i) => opt.classList.toggle('selected', i === selected));
+        }
+
+        function menuInput(e) {
+          if (gameState !== 'title') return;
+          if (e.key === 'ArrowDown')  { e.preventDefault(); selected = (selected + 1) % options.length; updateMenu(); }
+          if (e.key === 'ArrowUp')    { e.preventDefault(); selected = (selected - 1 + options.length) % options.length; updateMenu(); }
+          if (e.key === 'Enter')      { e.preventDefault(); selectMenuOption(selected); }
+        }
+
+        document.addEventListener('keydown', menuInput);
+        options.forEach((opt, i) => opt.addEventListener('click', () => selectMenuOption(i)));
+        updateMenu();
+      }
+
+      function selectMenuOption(index) {
+        if (index === 0) {
+          startNewGame();
+        } else if (index === 1) {
+          alert('HOW TO PLAY:\n\nWASD / Arrows - Move\nSPACE - Interact with projects\nM - Show map progress\nF - Toggle fullscreen\n\nFind all 6 projects to complete the portfolio!\nDefeat bugs to gain XP and level up.');
+        }
+      }
+
+
+      /* ─── Game Lifecycle ─── */
+
+      function startNewGame() {
+        document.getElementById('titleScreen').classList.add('hidden');
+        document.getElementById('gameUI').style.display = 'flex';
+        gameState = 'playing';
+
+        player = { x: 2, y: 2, hp: 100, maxHp: 100, xp: 0, maxXp: 100, level: 1, skills: [] };
+        generateMap();
+        spawnEnemies();
+        revealFog();
+        updateUI();
+        addMessage("Welcome to Dev Quest! Find all 6 projects.");
+        setTimeout(() => canvas.focus(), 100);
+      }
+
+      function startGameLoop() {
+        function loop() {
+          if (isPowered && (gameState === 'playing' || gameState === 'title' || gameState === 'boot')) {
+            update();
+            render();
+            frameCount++;
+          }
+          gameLoopId = requestAnimationFrame(loop);
+        }
+        loop();
+      }
+
+
+      /* ─── Update (per-frame logic) ─── */
+
+      function update() {
+        if (gameState !== 'playing') return;
+
+        const container = document.getElementById('gameContainer');
+        const viewWidth  = container.clientWidth;
+        const viewHeight = container.clientHeight;
+
+        camera.x = player.x * TILE_SIZE - viewWidth  / 2 + TILE_SIZE / 2;
+        camera.y = player.y * TILE_SIZE - viewHeight / 2 + TILE_SIZE / 2;
+        camera.x = Math.max(0, Math.min(camera.x, MAP_WIDTH  * TILE_SIZE - viewWidth));
+        camera.y = Math.max(0, Math.min(camera.y, MAP_HEIGHT * TILE_SIZE - viewHeight));
+
+        enemies.forEach(e => {
+          e.moveTimer++;
+          if (e.moveTimer > 60) {
+            e.moveTimer = 0;
+            if (Math.random() < 0.3) {
+              const dirs = [[0,1],[0,-1],[1,0],[-1,0]];
+              const dir  = dirs[Math.floor(Math.random() * dirs.length)];
+              const nx = e.x + dir[0];
+              const ny = e.y + dir[1];
+              if (nx >= 0 && nx < MAP_WIDTH && ny >= 0 && ny < MAP_HEIGHT &&
+                  map[ny][nx] === 0 && !(nx === player.x && ny === player.y)) {
+                e.x = nx;
+                e.y = ny;
+              }
+            }
+          }
+        });
+
+        particles = particles.filter(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life--;
+          return p.life > 0;
+        });
+      }
+
+
+      /* ─── Render ─── */
+
+      function render() {
+        if (!ctx || !canvas) return;
+
+        const container  = document.getElementById('gameContainer');
+        const viewWidth  = container.clientWidth;
+        const viewHeight = container.clientHeight;
+
+        ctx.fillStyle = COLORS.bg;
+        ctx.fillRect(0, 0, viewWidth, viewHeight);
+
+        if (gameState === 'boot') return;
+
+        const startX = Math.floor(camera.x / TILE_SIZE);
+        const startY = Math.floor(camera.y / TILE_SIZE);
+        const endX   = startX + Math.ceil(viewWidth  / TILE_SIZE) + 1;
+        const endY   = startY + Math.ceil(viewHeight / TILE_SIZE) + 1;
+
+        for (let y = Math.max(0, startY); y < Math.min(MAP_HEIGHT, endY); y++) {
+          for (let x = Math.max(0, startX); x < Math.min(MAP_WIDTH, endX); x++) {
+            const screenX = Math.floor(x * TILE_SIZE - camera.x);
+            const screenY = Math.floor(y * TILE_SIZE - camera.y);
+
+            if (!visited[y] || !visited[y][x]) {
+              ctx.fillStyle = COLORS.fog;
+              ctx.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
+              continue;
+            }
+
+            if (map[y][x] === 1) {
+              ctx.fillStyle = COLORS.wall;
+              ctx.fillRect(screenX, screenY + 4, TILE_SIZE, TILE_SIZE - 4);
+              ctx.fillStyle = COLORS.wallTop;
+              ctx.fillRect(screenX, screenY, TILE_SIZE, 4);
+              ctx.fillStyle = '#002200';
+              ctx.fillRect(screenX + 4, screenY + 8, TILE_SIZE - 8, 2);
+            } else {
+              ctx.fillStyle = COLORS.floor;
+              ctx.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
+              ctx.strokeStyle = '#002200';
+              ctx.lineWidth = 0.5;
+              ctx.strokeRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
+            }
+          }
+        }
+
+        SKILLS.forEach((skill, i) => {
+          const sx = 10 + (i % 3) * 10;
+          const sy = 3  + Math.floor(i / 3) * 8;
+          if (visited[sy] && visited[sy][sx] && !player.skills.includes('skill' + i)) {
+            const screenX = Math.floor(sx * TILE_SIZE - camera.x);
+            const screenY = Math.floor(sy * TILE_SIZE - camera.y);
+            ctx.fillStyle = 'rgba(255,170,0,0.3)';
+            ctx.fillRect(screenX - 4, screenY - 4, TILE_SIZE + 8, TILE_SIZE + 8);
+            ctx.font = '16px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(skill.icon, screenX + TILE_SIZE / 2, screenY + TILE_SIZE / 2 + 6);
+          }
+        });
+
+        PROJECTS.forEach(p => {
+          if (!visited[p.y] || !visited[p.y][p.x]) return;
+          const screenX = Math.floor(p.x * TILE_SIZE - camera.x);
+          const screenY = Math.floor(p.y * TILE_SIZE - camera.y);
+
+          ctx.fillStyle = '#002200';
+          ctx.fillRect(screenX + 2, screenY + 14, TILE_SIZE - 4, 8);
+
+          const glow = Math.sin(frameCount * 0.1) * 0.3 + 0.7;
+          ctx.fillStyle = `rgba(0,255,255,${glow})`;
+          ctx.beginPath();
+          ctx.moveTo(screenX + TILE_SIZE / 2, screenY + 4);
+          ctx.lineTo(screenX + TILE_SIZE - 4,  screenY + 12);
+          ctx.lineTo(screenX + TILE_SIZE / 2, screenY + 20);
+          ctx.lineTo(screenX + 4,             screenY + 12);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = COLORS.text;
+          ctx.font = '10px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(p.id.toString(), screenX + TILE_SIZE / 2, screenY + 28);
+        });
+
+        enemies.forEach(e => {
+          if (!visited[e.y] || !visited[e.y][e.x]) return;
+          const screenX = Math.floor(e.x * TILE_SIZE - camera.x);
+          const screenY = Math.floor(e.y * TILE_SIZE - camera.y);
+
+          ctx.fillStyle = COLORS.enemyGlow;
+          ctx.fillRect(screenX - 2, screenY - 2, TILE_SIZE + 4, TILE_SIZE + 4);
+
+          ctx.fillStyle = COLORS.enemy;
+          ctx.beginPath();
+          ctx.arc(screenX + TILE_SIZE / 2, screenY + TILE_SIZE / 2, 7, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.strokeStyle = COLORS.enemy;
+          ctx.lineWidth = 2;
+          for (let i = 0; i < 4; i++) {
+            const angle = (frameCount * 0.2 + i * Math.PI / 2) % (Math.PI * 2);
+            ctx.beginPath();
+            ctx.moveTo(screenX + TILE_SIZE / 2, screenY + TILE_SIZE / 2);
+            ctx.lineTo(
+              screenX + TILE_SIZE / 2 + Math.cos(angle) * 9,
+              screenY + TILE_SIZE / 2 + Math.sin(angle) * 9
+            );
+            ctx.stroke();
+          }
+        });
+
+        particles.forEach(p => {
+          ctx.fillStyle = p.color;
+          ctx.fillRect(Math.floor(p.x - camera.x), Math.floor(p.y - camera.y), p.size, p.size);
+        });
+
+        const px = Math.floor(player.x * TILE_SIZE - camera.x);
+        const py = Math.floor(player.y * TILE_SIZE - camera.y);
+
+        const playerGlow = Math.sin(frameCount * 0.15) * 0.2 + 0.8;
+        ctx.fillStyle = `rgba(0,255,65,${playerGlow * 0.4})`;
+        ctx.fillRect(px - 4, py - 4, TILE_SIZE + 8, TILE_SIZE + 8);
+
+        ctx.fillStyle = COLORS.player;
+        ctx.fillRect(px + 4, py + 4, TILE_SIZE - 8, TILE_SIZE - 8);
+
+        ctx.fillStyle = '#000';
+        ctx.fillRect(px + 7,  py + 8, 4, 4);
+        ctx.fillRect(px + 15, py + 8, 4, 4);
+      }
+
+
+      /* ─── Input ─── */
+
+      function handleInput(e) {
+        if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); return; }
+        if (gameState === 'boot') return;
+        if (gameState === 'modal') {
+          if (e.key === 'Enter' || e.key === 'Escape') closeAllModals();
+          return;
+        }
+        if (gameState !== 'playing') return;
+
+        let dx = 0, dy = 0;
+
+        switch (e.key) {
+          case 'w': case 'W': case 'ArrowUp':    dy = -1; break;
+          case 's': case 'S': case 'ArrowDown':  dy =  1; break;
+          case 'a': case 'A': case 'ArrowLeft':  dx = -1; break;
+          case 'd': case 'D': case 'ArrowRight': dx =  1; break;
+          case ' ': case 'Enter': interact(); return;
+          case 'm': case 'M':    showMap();   return;
+          default: return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+        if (dx !== 0 || dy !== 0) movePlayer(dx, dy);
+      }
+
+
+      /* ─── Gameplay ─── */
+
+      function movePlayer(dx, dy) {
+        const newX = player.x + dx;
+        const newY = player.y + dy;
+
+        if (newX < 0 || newX >= MAP_WIDTH || newY < 0 || newY >= MAP_HEIGHT) return;
+        if (map[newY][newX] === 1) { addMessage('Blocked by wall!'); return; }
+
+        const enemy = enemies.find(e => e.x === newX && e.y === newY);
+        if (enemy) { attackEnemy(enemy); return; }
+
+        player.x = newX;
+        player.y = newY;
+        revealFog();
+        checkInteractions();
+      }
+
+      function attackEnemy(enemy) {
+        enemy.hp--;
+        createParticles(enemy.x, enemy.y, COLORS.enemy, 5);
+
+        if (enemy.hp <= 0) {
+          enemies = enemies.filter(e => e !== enemy);
+          player.xp += 10;
+          addMessage('Bug destroyed! +10 XP');
+          checkLevelUp();
+        } else {
+          addMessage(`Hit bug! (${enemy.hp} HP)`);
+          player.hp -= 5;
+          updateUI();
+          if (player.hp <= 0) gameOver();
+        }
+      }
+
+      function revealFog() {
+        for (let y = 0; y < MAP_HEIGHT; y++) {
+          for (let x = 0; x < MAP_WIDTH; x++) {
+            if (Math.sqrt((x - player.x) ** 2 + (y - player.y) ** 2) < 6) {
+              visited[y][x] = true;
+            }
+          }
+        }
+      }
+
+      function interact() { checkInteractions(); }
+
+      function checkInteractions() {
+        const project = PROJECTS.find(p => p.x === player.x && p.y === player.y);
+        if (project && !player.skills.includes(project.id)) { showProject(project); return; }
+
+        SKILLS.forEach((skill, i) => {
+          const sx = 10 + (i % 3) * 10;
+          const sy = 3  + Math.floor(i / 3) * 8;
+          if (player.x === sx && player.y === sy && !player.skills.includes('skill' + i)) {
+            gainSkill(i);
+          }
+        });
+      }
+
+      function showMap() {
+        const completed = player.skills.filter(s => typeof s === 'number').length;
+        addMessage(`Progress: ${completed}/${PROJECTS.length} projects | Pos: ${player.x},${player.y}`);
+      }
+
+      function gameOver() {
+        gameState = 'modal';
+        alert('GAME OVER\n\nYou ran out of HP! Refresh to try again.');
+      }
+
+      function checkLevelUp() {
+        if (player.xp >= player.maxXp) {
+          player.level++;
+          player.xp    -= player.maxXp;
+          player.maxXp  = Math.floor(player.maxXp * 1.3);
+          player.maxHp += 15;
+          player.hp     = player.maxHp;
+          addMessage(`★ LEVEL UP! Now Level ${player.level} ★`);
+          updateUI();
+        }
+      }
+
+
+      /* ─── Modals ─── */
+
+      function showProject(project) {
+        gameState = 'modal';
+        player.skills.push(project.id);
+        player.xp += 25;
+
+        document.getElementById('modalTitle').textContent      = project.name;
+        document.getElementById('modalType').textContent       = project.type;
+        document.getElementById('modalStack').textContent      = project.stack;
+        document.getElementById('modalStatus').textContent     = project.status;
+        document.getElementById('modalDifficulty').textContent = '★'.repeat(project.difficulty) + '☆'.repeat(5 - project.difficulty);
+        document.getElementById('modalDesc').textContent       = project.desc;
+        document.getElementById('modalImage').src              = project.img;
+        document.getElementById('modalLink').href              = project.link;
+
+        document.getElementById('projectModal').classList.add('active');
+        updateUI();
+        checkLevelUp();
+        addMessage(`Project ${project.id} completed! +25 XP`);
+
+        const completed = player.skills.filter(s => typeof s === 'number').length;
+        if (completed === PROJECTS.length) {
+          setTimeout(() => alert('🎉 PORTFOLIO COMPLETE! 🎉\n\nYou\'ve discovered all 6 projects!\nRefresh to play again.'), 500);
+        }
+      }
+
+      window.closeProjectModal = function() {
+        document.getElementById('projectModal').classList.remove('active');
+        gameState = 'playing';
+        setTimeout(() => canvas.focus(), 100);
+      };
+
+      function gainSkill(index) {
+        gameState = 'modal';
+        player.skills.push('skill' + index);
+        player.maxHp += 10;
+        player.hp = player.maxHp;
+
+        const skill = SKILLS[index];
+        document.getElementById('levelIcon').textContent = skill.icon;
+        document.getElementById('levelName').textContent = skill.name;
+        document.getElementById('levelDesc').textContent = skill.desc;
+
+        document.getElementById('levelModal').classList.add('active');
+        addMessage(`Acquired: ${skill.name}! Max HP +10`);
+        updateUI();
+      }
+
+      window.closeLevelModal = function() {
+        document.getElementById('levelModal').classList.remove('active');
+        gameState = 'playing';
+        setTimeout(() => canvas.focus(), 100);
+      };
+
+      function closeAllModals() {
+        document.querySelectorAll('.project-modal, .level-modal').forEach(m => m.classList.remove('active'));
+        gameState = 'playing';
+        setTimeout(() => canvas.focus(), 100);
+      }
+
+
+      /* ─── HUD ─── */
+
+      function updateUI() {
+        const hpPercent = player.hp / player.maxHp;
+        const hpFill    = Math.ceil(hpPercent * 10);
+        document.getElementById('hpDisplay').textContent = '█'.repeat(hpFill) + '░'.repeat(10 - hpFill);
+        document.getElementById('hpText').textContent    = `${player.hp}/${player.maxHp}`;
+
+        const xpPercent = player.xp / player.maxXp;
+        const xpFill    = Math.floor(xpPercent * 10);
+        document.getElementById('xpDisplay').textContent = '▓'.repeat(xpFill) + '░'.repeat(10 - xpFill);
+
+        document.getElementById('levelDisplay').textContent = player.level;
+
+        const completed = player.skills.filter(s => typeof s === 'number').length;
+        document.getElementById('skillList').textContent = `${completed}/${PROJECTS.length}`;
+      }
+
+      function addMessage(text) {
+        const log = document.getElementById('messageLog');
+        const msg = document.createElement('div');
+        msg.className   = 'message';
+        msg.textContent = '> ' + text;
+        log.appendChild(msg);
+        while (log.children.length > 5) log.removeChild(log.firstChild);
+        setTimeout(() => { if (msg.parentNode === log) log.removeChild(msg); }, 4000);
+      }
+
+      function createParticles(x, y, color, count) {
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: x * TILE_SIZE + TILE_SIZE / 2,
+            y: y * TILE_SIZE + TILE_SIZE / 2,
+            vx:   (Math.random() - 0.5) * 4,
+            vy:   (Math.random() - 0.5) * 4,
+            life:  30,
+            color: color,
+            size:  Math.random() * 3 + 2
+          });
+        }
+      }
+
+
+      /* ─── Power & Fullscreen ─── */
+
+      function togglePower() {
+        isPowered = !isPowered;
+        const screen = document.getElementById('crtScreen');
+        const led    = document.getElementById('crtLed');
+
+        if (!isPowered) {
+          screen.classList.add('poff');
+          led.classList.add('off');
+          addMessage('POWER OFF');
+        } else {
+          screen.classList.remove('poff');
+          led.classList.remove('off');
+          addMessage('POWER ON');
+        }
+      }
+
+      function toggleFullscreen() {
+        const shell = document.getElementById('monitorShell');
+        if (!isFullscreen) {
+          if      (shell.requestFullscreen)       shell.requestFullscreen();
+          else if (shell.webkitRequestFullscreen) shell.webkitRequestFullscreen();
+          else if (shell.mozRequestFullScreen)    shell.mozRequestFullScreen();
+        } else {
+          if      (document.exitFullscreen)        document.exitFullscreen();
+          else if (document.webkitExitFullscreen)  document.webkitExitFullscreen();
+          else if (document.mozCancelFullScreen)   document.mozCancelFullScreen();
+        }
+      }
+
+      function handleFullscreenChange() {
+        const shell = document.getElementById('monitorShell');
+        const btn   = document.getElementById('fullscreenBtn');
+
+        isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
+
+        if (isFullscreen) {
+          shell.classList.add('fullscreen');
+          btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg><span>EXIT</span>`;
+        } else {
+          shell.classList.remove('fullscreen');
+          btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><span>FULLSCREEN</span>`;
+        }
+
+        setTimeout(resizeCanvas, 100);
+      }
+
+
+      /* ─── Startup ─── */
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initGame);
+      } else {
+        initGame();
+      }
+
+    })();
+
+  </script>
+
+</body>
+</html>
