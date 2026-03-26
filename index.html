@@ -662,29 +662,14 @@
 
 
     /* ─────────────────────────────────────────────
-       GAME — CANVAS & CONTAINER
-    ───────────────────────────────────────────── */
-    #gameContainer { position: relative; width: 100%; height: 600px; overflow: hidden; }
-
-    #gameCanvas {
-      display: block;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-      width: 100%; height: 100%;
-      outline: none;
-      background: #001100;
-    }
-
-
-    /* ─────────────────────────────────────────────
-       GAME — FULLSCREEN BUTTON
+       FULLSCREEN BUTTON
     ───────────────────────────────────────────── */
     .fullscreen-btn {
-      position: absolute; top: 20px; right: 20px; z-index: 30;
+      position: absolute; top: 12px; right: 12px; z-index: 30;
       background: rgba(0, 20, 0, .9);
       border: 1px solid #004a14;
       color: #00ff41;
-      padding: 8px 16px;
+      padding: 6px 14px;
       font-family: 'VT323', monospace;
       font-size: 1rem;
       cursor: pointer;
@@ -696,185 +681,167 @@
 
 
     /* ─────────────────────────────────────────────
-       GAME — HUD OVERLAY
+       TERMINAL PROJECT BROWSER
     ───────────────────────────────────────────── */
-    .game-ui {
-      position: absolute; inset: 0;
-      pointer-events: none; z-index: 15;
-      display: flex; flex-direction: column; justify-content: space-between;
-      padding: 15px;
-      font-family: 'VT323', monospace;
-      text-shadow: 0 0 4px rgba(0, 255, 65, .5);
-    }
-
-    .ui-top    { display: flex; justify-content: space-between; align-items: flex-start; font-size: 1.2rem; }
-    .ui-bottom { display: flex; justify-content: space-between; align-items: flex-end;   font-size: 1rem; }
-
-    .stat-box  { background: rgba(0, 20, 0, .9); border: 1px solid #004a14; padding: 8px 12px; border-radius: 2px; }
-
-    .hp-bar, .xp-bar { display: inline-flex; align-items: center; gap: 6px; }
-    .bar-fill  { display: inline-block; font-family: 'VT323', monospace; letter-spacing: -1px; }
-
-    .controls-hint { color: #00aa28; font-size: 0.9rem; }
-
-    /* Message log */
-    .message-log {
-      position: absolute; bottom: 70px; left: 15px; right: 15px;
-      display: flex; flex-direction: column; gap: 4px;
-      pointer-events: none; z-index: 16;
-    }
-
-    .message {
-      background: rgba(0, 20, 0, .95);
-      border-left: 3px solid #00ff41;
-      padding: 6px 10px;
-      font-size: 1.1rem;
-      animation: msgSlide 0.3s ease;
-      max-width: 450px;
-    }
-
-    @keyframes msgSlide { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-
-    /* ─────────────────────────────────────────────
-       GAME — SCREENS (boot / title)
-    ───────────────────────────────────────────── */
-    .screen {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      z-index: 5;
-      transition: opacity 0.3s;
-      background: #001100;
-    }
-
-    .screen.hidden { opacity: 0; pointer-events: none; }
-
-    /* Boot screen */
-    .boot-text { font-size: 1.3rem; line-height: 1.6; text-align: left; max-width: 600px; padding: 20px; font-family: 'VT323', monospace; }
-    .boot-line { opacity: 0; animation: bootReveal 0.12s ease forwards; margin: 3px 0; }
-    @keyframes bootReveal { to { opacity: 1; } }
-
-    .blink { animation: blink 1s step-end infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
-
-    /* Title screen */
-    .title-screen { text-align: center; }
-
-    .game-title { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 0 0 30px rgba(0, 255, 65, .8); letter-spacing: 6px; }
-    .subtitle   { font-size: 1.3rem; color: #00aa28; margin-bottom: 40px; }
-
-    .menu-option {
-      font-size: 1.4rem;
-      padding: 10px 30px;
-      margin: 8px 0;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid transparent;
-    }
-
-    .menu-option:hover,
-    .menu-option.selected { background: rgba(0, 255, 65, .15); border-color: #00ff41; text-shadow: 0 0 15px #00ff41; }
-
-    .menu-arrow { display: inline-block; margin-right: 10px; opacity: 0; }
-    .menu-option.selected .menu-arrow { opacity: 1; }
-
-
-    /* ─────────────────────────────────────────────
-       GAME — PROJECT DETAIL MODAL
-    ───────────────────────────────────────────── */
-    .project-modal {
-      position: absolute; inset: 0;
-      background: rgba(0, 8, 0, .97);
-      z-index: 25;
-      display: none;
+    #terminal {
+      position: relative;
+      width: 100%;
+      height: 600px;
+      display: flex;
       flex-direction: column;
-      padding: 25px;
-      overflow-y: auto;
-    }
-
-    .project-modal.active { display: flex; animation: modalIn 0.3s ease; }
-
-    @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-
-    .modal-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #004a14;
-      padding-bottom: 12px;
-    }
-
-    .modal-title { font-size: 1.8rem; text-shadow: 0 0 15px rgba(0, 255, 65, .5); }
-
-    .modal-close {
-      background: transparent;
-      border: 1px solid #00ff41;
+      font-family: 'VT323', 'Share Tech Mono', monospace;
       color: #00ff41;
-      padding: 6px 14px;
-      cursor: pointer;
-      font-family: 'VT323', monospace;
-      font-size: 1.1rem;
-      transition: all 0.2s;
+      background: #010801;
     }
 
-    .modal-close:hover { background: #00ff41; color: #000; }
+    .term-header {
+      padding: 12px 18px 10px;
+      border-bottom: 1px solid #002800;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+      color: #00cc33;
+    }
 
-    .project-image   { width: 100%; height: 220px; object-fit: cover; border: 2px solid #004a14; margin-bottom: 20px; filter: sepia(100%) hue-rotate(70deg) saturate(200%) contrast(1.1); }
-    .project-stats   { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; font-size: 1.1rem; }
-    .stat-row-p      { display: flex; justify-content: space-between; border-bottom: 1px solid #003010; padding: 5px 0; }
-    .stat-label      { color: #008820; }
-    .stat-value      { color: #00ff41; }
-    .project-desc    { font-size: 1.2rem; line-height: 1.6; color: #00cc33; margin-bottom: 25px; }
-    .project-links   { display: flex; gap: 15px; }
+    .term-prompt { color: #00ff41; }
+    .term-path   { color: #00aa28; }
+    .term-cursor { animation: tcursor 1s step-end infinite; }
+    @keyframes tcursor { 50% { opacity: 0; } }
 
-    .game-btn {
+    .term-body {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* Left — project list */
+    .term-list {
+      border-right: 1px solid #002800;
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+
+    .term-list::-webkit-scrollbar       { width: 3px; }
+    .term-list::-webkit-scrollbar-track { background: #010801; }
+    .term-list::-webkit-scrollbar-thumb { background: #003a10; }
+
+    .term-item {
+      padding: 10px 16px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .term-item:hover  { background: rgba(0,255,65,.05); border-left-color: #005a18; }
+    .term-item.active { background: rgba(0,255,65,.1);  border-left-color: #00ff41; }
+
+    .term-item-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+
+    .term-idx   { color: #005a18; font-size: 0.95rem; flex-shrink: 0; }
+    .term-name  { color: #00ff41; flex: 1; }
+    .term-badge {
+      font-size: 0.72rem;
+      color: #008820;
+      border: 1px solid #003a10;
+      padding: 1px 6px;
+      flex-shrink: 0;
+    }
+
+    .term-stack-small { font-size: 0.85rem; color: #005a18; padding-left: 26px; margin-top: 2px; }
+
+    /* Right — detail pane */
+    .term-detail {
+      padding: 20px 22px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .term-detail::-webkit-scrollbar       { width: 3px; }
+    .term-detail::-webkit-scrollbar-track { background: #010801; }
+    .term-detail::-webkit-scrollbar-thumb { background: #003a10; }
+
+    .term-detail-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #003a10;
+      font-size: 1.1rem;
+      text-align: center;
+      gap: 8px;
+    }
+
+    .term-detail-title {
+      font-size: 1.55rem;
+      color: #00ff41;
+      text-shadow: 0 0 10px rgba(0,255,65,.35);
+      border-bottom: 1px solid #002800;
+      padding-bottom: 10px;
+    }
+
+    .term-detail-img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border: 1px solid #003a10;
+      filter: sepia(100%) hue-rotate(70deg) saturate(180%) contrast(1.1);
+    }
+
+    .term-detail-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      font-size: 1rem;
+    }
+
+    .term-meta-row {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid #002200;
+      padding: 4px 0;
+    }
+
+    .term-meta-key { color: #007a20; }
+    .term-meta-val { color: #00ff41; }
+
+    .term-detail-desc { font-size: 1.05rem; color: #00cc33; line-height: 1.55; }
+
+    .term-detail-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       background: #00ff41;
       color: #000;
-      border: none;
-      padding: 10px 25px;
+      padding: 7px 20px;
       font-family: 'VT323', monospace;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: all 0.2s;
+      font-size: 1.1rem;
       text-decoration: none;
-      display: inline-flex; align-items: center; gap: 10px;
+      transition: box-shadow 0.2s, transform 0.2s;
+      align-self: flex-start;
     }
 
-    .game-btn:hover     { box-shadow: 0 0 25px rgba(0, 255, 65, .6); transform: translateY(-2px); }
-    .game-btn.secondary { background: transparent; border: 1px solid #00ff41; color: #00ff41; }
-
-
-    /* ─────────────────────────────────────────────
-       GAME — LEVEL-UP MODAL
-    ───────────────────────────────────────────── */
-    .level-modal {
-      position: absolute; inset: 0;
-      background: rgba(0, 8, 0, .97);
-      z-index: 30;
-      display: none;
-      flex-direction: column; align-items: center; justify-content: center;
-      padding: 30px;
-    }
-
-    .level-modal.active { display: flex; animation: modalIn 0.3s ease; }
-
-    .level-title { font-size: 2.5rem; margin-bottom: 25px; text-align: center; text-shadow: 0 0 25px rgba(0, 255, 65, .8); }
-    .level-icon  { font-size: 3.5rem; margin-bottom: 20px; animation: float 2s ease infinite; }
-    .level-name  { font-size: 1.6rem; color: #00ff41; margin-bottom: 10px; }
-    .level-desc  { font-size: 1.2rem; color: #00aa28; text-align: center; max-width: 450px; margin-bottom: 30px; line-height: 1.5; }
-
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .term-detail-link:hover { box-shadow: 0 0 20px rgba(0,255,65,.5); transform: translateY(-2px); }
 
 
     /* ─────────────────────────────────────────────
        RESPONSIVE
     ───────────────────────────────────────────── */
     @media (max-width: 900px) {
-      .hero-grid  { grid-template-columns: 1fr !important; }
+      .hero-grid    { grid-template-columns: 1fr !important; }
       .hero-img-col { display: none; }
-
-      #gameContainer { height: 400px; }
-      .game-title { font-size: 2rem; }
-      .message-log { bottom: 60px; }
+      .term-body    { grid-template-columns: 1fr; }
+      .term-list    { border-right: none; border-bottom: 1px solid #002800; max-height: 200px; }
+      #terminal     { height: auto; min-height: 520px; }
 
       .monitor-shell.fullscreen { padding: 10px; }
       .monitor-shell.fullscreen .bezel-top,
@@ -1160,89 +1127,22 @@
                 <span>FULLSCREEN</span>
               </button>
 
-              <!-- Game canvas -->
-              <div id="gameContainer">
-                <canvas id="gameCanvas" tabindex="0"></canvas>
-
-                <!-- HUD overlay -->
-                <div class="game-ui" id="gameUI" style="display:none;">
-                  <div class="ui-top">
-                    <div class="stat-box">
-                      <div class="hp-bar">
-                        HP: <span class="bar-fill" id="hpDisplay">██████████</span>
-                        <span id="hpText">100/100</span>
-                      </div>
-                    </div>
-                    <div class="stat-box" style="text-align:right;">
-                      <div>LVL: <span id="levelDisplay">1</span></div>
-                      <div class="xp-bar">XP: <span class="bar-fill" id="xpDisplay">░░░░░░░░░░</span></div>
-                    </div>
-                  </div>
-
-                  <div class="message-log" id="messageLog"></div>
-
-                  <div class="ui-bottom">
-                    <div class="controls-hint" id="controlsHint">[WASD] Move • [SPACE] Interact • [M] Map • [F] Fullscreen</div>
-                    <div class="stat-box" id="inventoryDisplay">PROJECTS: <span id="skillList">0/6</span></div>
-                  </div>
+              <!-- Terminal project browser -->
+              <div id="terminal">
+                <div class="term-header">
+                  <span class="term-prompt">aiden@portfolio</span>:<span class="term-path">~/projects</span>$ ls -la<span class="term-cursor">_</span>
                 </div>
-
-                <!-- Boot screen -->
-                <div class="screen" id="bootScreen">
-                  <div class="boot-text" id="bootText"></div>
-                </div>
-
-                <!-- Title screen -->
-                <div class="screen hidden" id="titleScreen">
-                  <div class="title-screen">
-                    <div class="game-title">◄ DEV QUEST ►</div>
-                    <div class="subtitle">~ Aiden's Portfolio Dungeon ~</div>
-
-                    <div style="margin-top:40px;">
-                      <div class="menu-option selected" data-index="0"><span class="menu-arrow">►</span>NEW GAME</div>
-                      <div class="menu-option"          data-index="1"><span class="menu-arrow">►</span>MANUAL</div>
-                    </div>
-
-                    <div style="margin-top:40px;font-size:0.9rem;color:#006820;">
-                      [ENTER] Select • [↑↓] Navigate • [F] Fullscreen
+                <div class="term-body">
+                  <div class="term-list" id="termList"></div>
+                  <div class="term-detail" id="termDetail">
+                    <div class="term-detail-empty">
+                      <div>&gt; select a project to view details_</div>
+                      <div style="font-size:0.85rem;color:#002800;margin-top:4px">click any project on the left</div>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <!-- Project detail modal -->
-                <div class="project-modal" id="projectModal">
-                  <div class="modal-header">
-                    <div class="modal-title" id="modalTitle">PROJECT NAME</div>
-                    <button class="modal-close" onclick="closeProjectModal()">[X]</button>
-                  </div>
-
-                  <img class="project-image" id="modalImage" src="" alt="">
-
-                  <div class="project-stats">
-                    <div class="stat-row-p"><span class="stat-label">TYPE:</span>       <span class="stat-value" id="modalType">FULLSTACK</span></div>
-                    <div class="stat-row-p"><span class="stat-label">STACK:</span>      <span class="stat-value" id="modalStack">React/Node</span></div>
-                    <div class="stat-row-p"><span class="stat-label">STATUS:</span>     <span class="stat-value" id="modalStatus">DEPLOYED</span></div>
-                    <div class="stat-row-p"><span class="stat-label">DIFFICULTY:</span> <span class="stat-value" id="modalDifficulty">★★★★☆</span></div>
-                  </div>
-
-                  <div class="project-desc" id="modalDesc">Project description goes here...</div>
-
-                  <div class="project-links">
-                    <a href="#" class="game-btn" id="modalLink" target="_blank">[ VIEW PROJECT ]</a>
-                    <button class="game-btn secondary" onclick="closeProjectModal()">[ BACK TO MAP ]</button>
-                  </div>
-                </div>
-
-                <!-- Level-up modal -->
-                <div class="level-modal" id="levelModal">
-                  <div class="level-title">★ LEVEL UP! ★</div>
-                  <div class="level-icon" id="levelIcon">⚔️</div>
-                  <div class="level-name" id="levelName">Skill Acquired!</div>
-                  <div class="level-desc" id="levelDesc">Description of the upgrade...</div>
-                  <button class="game-btn" onclick="closeLevelModal()">[ CONTINUE ]</button>
-                </div>
-
-              </div><!-- /#gameContainer -->
             </div><!-- /.crt-screen -->
           </div><!-- /.screen-surround -->
 
@@ -1566,15 +1466,11 @@
 
 
     /* ─────────────────────────────────────────────
-       ROGUELIKE GAME ENGINE
+       TERMINAL PROJECT BROWSER
     ───────────────────────────────────────────── */
     (function() {
 
       /* ── Constants ── */
-      const TILE_SIZE  = 24;
-      const MAP_WIDTH  = 40;
-      const MAP_HEIGHT = 25;
-
       const COLORS = {
         bg:          '#001100',
         wall:        '#003300',
@@ -1599,729 +1495,140 @@
           stack: 'React / Vite / TypeScript / Express', status: 'IN DEVELOPMENT', difficulty: 5,
           desc: 'Full-stack AI agent command centre built with React, Vite and the Anthropic Claude API. Features live code preview, multi-agent support, and real-time generation.',
           img: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&auto=format&fit=crop&q=80',
-          link: 'https://github.com/Aiden-Brown153', x: 5, y: 5
+          link: 'https://github.com/Aiden-Brown153'
         },
         {
           id: 2, name: 'LIFE ASSISTANT APP', type: 'PYTHON APP',
           stack: 'Python / Tkinter', status: 'COMPLETE', difficulty: 2,
           desc: 'Personal productivity desktop app with finance tracking and daily habit management modules built entirely in Python.',
           img: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&auto=format&fit=crop&q=80',
-          link: 'https://github.com/Aiden-Brown153', x: 15, y: 8
+          link: 'https://github.com/Aiden-Brown153'
         },
         {
           id: 3, name: 'NEXABOOKS WEBSITE', type: 'CLIENT SITE',
           stack: 'HTML / CSS / JavaScript', status: 'DELIVERED', difficulty: 2,
           desc: 'Professional website designed and built for a bookkeeping and accounting firm. Responsive layout with services, pricing, and contact sections.',
           img: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&auto=format&fit=crop&q=80',
-          link: 'https://github.com/Aiden-Brown153', x: 25, y: 12
+          link: 'https://github.com/Aiden-Brown153'
         },
         {
           id: 4, name: 'MRDUCT WEBSITE', type: 'CLIENT SITE',
           stack: 'HTML / CSS / JavaScript', status: 'DELIVERED v3', difficulty: 3,
           desc: 'Multi-version website for MrDuct & The RDJ Group, an HVAC and construction company in Cape Town. Iterated across 3 versions based on client feedback.',
           img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&auto=format&fit=crop&q=80',
-          link: 'https://github.com/Aiden-Brown153', x: 32, y: 6
+          link: 'https://github.com/Aiden-Brown153'
         },
         {
           id: 5, name: 'BACH ELECTRICAL', type: 'CLIENT SITE',
           stack: 'HTML / CSS / JavaScript', status: 'DELIVERED', difficulty: 2,
           desc: 'Clean, professional website for BaCH Electrical, showcasing their electrical services and making it easy for clients to get in touch.',
           img: 'https://images.unsplash.com/photo-1621905251189-08b45249be50?w=800&auto=format&fit=crop&q=80',
-          link: 'https://github.com/Aiden-Brown153', x: 8, y: 18
+          link: 'https://github.com/Aiden-Brown153'
         },
         {
           id: 6, name: 'AUTO REPAIRS SITE', type: 'CLIENT SITE',
           stack: 'HTML / CSS / JavaScript', status: 'DELIVERED', difficulty: 1,
           desc: 'Responsive website for a local auto repair shop. Features services listing, location info, and a contact form to bring in new customers.',
           img: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&auto=format&fit=crop&q=80',
-          link: 'https://github.com/Aiden-Brown153', x: 28, y: 20
+          link: 'https://github.com/Aiden-Brown153'
         }
       ];
 
-      const SKILLS = [
-        { name: 'Web Dev Basics',    icon: '🌐', desc: 'HTML, CSS & JavaScript proficiency' },
-        { name: 'Python Power',      icon: '🐍', desc: 'Scripting and desktop app development' },
-        { name: 'React Skills',      icon: '⚛️', desc: 'Component architecture and state management' },
-        { name: 'API Integration',   icon: '🔌', desc: 'REST APIs and Anthropic SDK usage' },
-        { name: 'Version Control',   icon: '📦', desc: 'Git workflow and GitHub collaboration' },
-        { name: 'Problem Solving',   icon: '🧠', desc: 'Critical thinking and debugging skills' }
-      ];
 
-
-      /* ── State ── */
-      let canvas, ctx;
-      let gameState = 'boot';
-      let player    = { x: 2, y: 2, hp: 100, maxHp: 100, xp: 0, maxXp: 100, level: 1, skills: [] };
-      let map       = [];
-      let visited   = [];
-      let enemies   = [];
-      let particles = [];
-      let frameCount  = 0;
-      let camera      = { x: 0, y: 0 };
-      let isPowered   = true;
-      let isFullscreen = false;
-      let gameLoopId  = null;
-      let booted      = false;
-
-
-      /* ─── Initialization ─── */
-
-      function initGame() {
-        canvas = document.getElementById('gameCanvas');
-        if (!canvas) return;
-
-        ctx = canvas.getContext('2d');
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        generateMap();
-        spawnEnemies();
-
-        document.addEventListener('keydown', handleInput, true);
-        canvas.addEventListener('click', () => canvas.focus());
-
-        document.getElementById('fullscreenBtn').addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleFullscreen();
-        });
-
-        document.getElementById('powBtn').addEventListener('click', togglePower);
-        document.addEventListener('fullscreenchange',       handleFullscreenChange);
-        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-
-        runBootSequence();
-        startGameLoop();
-      }
-
-      function resizeCanvas() {
-        const container = document.getElementById('gameContainer');
-        if (!container || !canvas) return;
-        const rect = container.getBoundingClientRect();
-        const dpr  = window.devicePixelRatio || 1;
-        canvas.width       = rect.width  * dpr;
-        canvas.height      = rect.height * dpr;
-        canvas.style.width  = rect.width  + 'px';
-        canvas.style.height = rect.height + 'px';
-        if (ctx) ctx.scale(dpr, dpr);
-      }
-
-
-      /* ─── Map Generation ─── */
-
-      function generateMap() {
-        map     = [];
-        visited = [];
-
-        for (let y = 0; y < MAP_HEIGHT; y++) {
-          map[y]     = [];
-          visited[y] = [];
-
-          for (let x = 0; x < MAP_WIDTH; x++) {
-            let isWall = true;
-
-            if (y === 12 || x === 20) isWall = false;
-
-            PROJECTS.forEach(p => {
-              if (Math.abs(x - p.x) <= 2 && Math.abs(y - p.y) <= 2) isWall = false;
-            });
-
-            if (Math.random() < 0.03) {
-              for (let ry = -2; ry <= 2; ry++) {
-                for (let rx = -2; rx <= 2; rx++) {
-                  const ny = y + ry, nx = x + rx;
-                  if (ny >= 0 && ny < MAP_HEIGHT && nx >= 0 && nx < MAP_WIDTH) {
-                    if (Math.random() < 0.7) {
-                      if (!map[ny]) map[ny] = [];
-                      map[ny][nx] = 0;
-                    }
-                  }
-                }
-              }
-            }
-
-            if (x <= 3 && y <= 3) isWall = false;
-
-            map[y][x]     = isWall ? 1 : 0;
-            visited[y][x] = false;
-          }
-        }
-      }
-
-      function spawnEnemies() {
-        enemies = [];
-        for (let i = 0; i < 10; i++) {
-          let x, y;
-          do {
-            x = Math.floor(Math.random() * MAP_WIDTH);
-            y = Math.floor(Math.random() * MAP_HEIGHT);
-          } while (
-            map[y][x] === 1 ||
-            (Math.abs(x - player.x) < 5 && Math.abs(y - player.y) < 5) ||
-            PROJECTS.some(p => Math.abs(x - p.x) < 2 && Math.abs(y - p.y) < 2)
-          );
-          enemies.push({ x, y, hp: 3, maxHp: 3, type: 'bug', moveTimer: 0 });
-        }
-      }
-
-
-      /* ─── Boot & Title Sequences ─── */
-
-      function runBootSequence() {
-        const bootText = document.getElementById('bootText');
-        if (!bootText) return;
-
-        const lines = [
-          'AIDENCORP BIOS v1.0.0',
-          '══════════════════════════════════════════',
-          'CPU: STUDENT-ENGINE @ CTU Training Solutions',
-          'MEM: 640K OK  [████████████████] 100%',
-          'GPU: PIXEL-RENDERER v2.0 ........ [OK]',
-          'SND: 8-BIT SYNTHESIZER .......... [OK]',
-          'INPUT: KEYBOARD DETECTED ........ [OK]',
-          '',
-          'LOADING ROGUELIKE ENGINE...',
-          'GENERATING DUNGEON...',
-          'SPAWNING PROJECTS...',
-          'CALIBRATING DIFFICULTY...',
-          '',
-          'LOADING [████████████████████] 100%',
-          '',
-          '▶ PRESS ANY KEY TO START_'
-        ];
-
-        let lineIndex = 0;
-
-        function addLine() {
-          if (lineIndex < lines.length) {
-            const div       = document.createElement('div');
-            div.className   = 'boot-line';
-            div.textContent = lines[lineIndex];
-            bootText.appendChild(div);
-            lineIndex++;
-            setTimeout(addLine, lineIndex === lines.length - 1 ? 600 : 120);
-          } else {
-            setTimeout(() => {
-              document.addEventListener('keydown', onBootKey, { once: true });
-              document.addEventListener('click',   onBootKey, { once: true });
-            }, 200);
-          }
-        }
-
-        addLine();
-      }
-
-      function onBootKey() {
-        if (booted) return;
-        booted = true;
-        document.getElementById('bootScreen').classList.add('hidden');
-        document.getElementById('titleScreen').classList.remove('hidden');
-        gameState = 'title';
-        initTitleMenu();
-      }
-
-      function initTitleMenu() {
-        let selected = 0;
-        const options = document.querySelectorAll('#titleScreen .menu-option');
-
-        function updateMenu() {
-          options.forEach((opt, i) => opt.classList.toggle('selected', i === selected));
-        }
-
-        function menuInput(e) {
-          if (gameState !== 'title') return;
-          if (e.key === 'ArrowDown')  { e.preventDefault(); selected = (selected + 1) % options.length; updateMenu(); }
-          if (e.key === 'ArrowUp')    { e.preventDefault(); selected = (selected - 1 + options.length) % options.length; updateMenu(); }
-          if (e.key === 'Enter')      { e.preventDefault(); selectMenuOption(selected); }
-        }
-
-        document.addEventListener('keydown', menuInput);
-        options.forEach((opt, i) => opt.addEventListener('click', () => selectMenuOption(i)));
-        updateMenu();
-      }
-
-      function selectMenuOption(index) {
-        if (index === 0) {
-          startNewGame();
-        } else if (index === 1) {
-          alert('HOW TO PLAY:\n\nWASD / Arrows - Move\nSPACE - Interact with projects\nM - Show map progress\nF - Toggle fullscreen\n\nFind all 6 projects to complete the portfolio!\nDefeat bugs to gain XP and level up.');
-        }
-      }
-
-
-      /* ─── Game Lifecycle ─── */
-
-      function startNewGame() {
-        document.getElementById('titleScreen').classList.add('hidden');
-        document.getElementById('gameUI').style.display = 'flex';
-        gameState = 'playing';
-
-        player = { x: 2, y: 2, hp: 100, maxHp: 100, xp: 0, maxXp: 100, level: 1, skills: [] };
-        generateMap();
-        spawnEnemies();
-        revealFog();
-        updateUI();
-        addMessage("Welcome to Dev Quest! Find all 6 projects.");
-        setTimeout(() => canvas.focus(), 100);
-      }
-
-      function startGameLoop() {
-        function loop() {
-          if (isPowered && (gameState === 'playing' || gameState === 'title' || gameState === 'boot')) {
-            update();
-            render();
-            frameCount++;
-          }
-          gameLoopId = requestAnimationFrame(loop);
-        }
-        loop();
-      }
-
-
-      /* ─── Update (per-frame logic) ─── */
-
-      function update() {
-        if (gameState !== 'playing') return;
-
-        const container = document.getElementById('gameContainer');
-        const viewWidth  = container.clientWidth;
-        const viewHeight = container.clientHeight;
-
-        camera.x = player.x * TILE_SIZE - viewWidth  / 2 + TILE_SIZE / 2;
-        camera.y = player.y * TILE_SIZE - viewHeight / 2 + TILE_SIZE / 2;
-        camera.x = Math.max(0, Math.min(camera.x, MAP_WIDTH  * TILE_SIZE - viewWidth));
-        camera.y = Math.max(0, Math.min(camera.y, MAP_HEIGHT * TILE_SIZE - viewHeight));
-
-        enemies.forEach(e => {
-          e.moveTimer++;
-          if (e.moveTimer > 60) {
-            e.moveTimer = 0;
-            if (Math.random() < 0.3) {
-              const dirs = [[0,1],[0,-1],[1,0],[-1,0]];
-              const dir  = dirs[Math.floor(Math.random() * dirs.length)];
-              const nx = e.x + dir[0];
-              const ny = e.y + dir[1];
-              if (nx >= 0 && nx < MAP_WIDTH && ny >= 0 && ny < MAP_HEIGHT &&
-                  map[ny][nx] === 0 && !(nx === player.x && ny === player.y)) {
-                e.x = nx;
-                e.y = ny;
-              }
-            }
-          }
-        });
-
-        particles = particles.filter(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          p.life--;
-          return p.life > 0;
-        });
-      }
-
-
-      /* ─── Render ─── */
-
-      function render() {
-        if (!ctx || !canvas) return;
-
-        const container  = document.getElementById('gameContainer');
-        const viewWidth  = container.clientWidth;
-        const viewHeight = container.clientHeight;
-
-        ctx.fillStyle = COLORS.bg;
-        ctx.fillRect(0, 0, viewWidth, viewHeight);
-
-        if (gameState === 'boot') return;
-
-        const startX = Math.floor(camera.x / TILE_SIZE);
-        const startY = Math.floor(camera.y / TILE_SIZE);
-        const endX   = startX + Math.ceil(viewWidth  / TILE_SIZE) + 1;
-        const endY   = startY + Math.ceil(viewHeight / TILE_SIZE) + 1;
-
-        for (let y = Math.max(0, startY); y < Math.min(MAP_HEIGHT, endY); y++) {
-          for (let x = Math.max(0, startX); x < Math.min(MAP_WIDTH, endX); x++) {
-            const screenX = Math.floor(x * TILE_SIZE - camera.x);
-            const screenY = Math.floor(y * TILE_SIZE - camera.y);
-
-            if (!visited[y] || !visited[y][x]) {
-              ctx.fillStyle = COLORS.fog;
-              ctx.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
-              continue;
-            }
-
-            if (map[y][x] === 1) {
-              ctx.fillStyle = COLORS.wall;
-              ctx.fillRect(screenX, screenY + 4, TILE_SIZE, TILE_SIZE - 4);
-              ctx.fillStyle = COLORS.wallTop;
-              ctx.fillRect(screenX, screenY, TILE_SIZE, 4);
-              ctx.fillStyle = '#002200';
-              ctx.fillRect(screenX + 4, screenY + 8, TILE_SIZE - 8, 2);
-            } else {
-              ctx.fillStyle = COLORS.floor;
-              ctx.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
-              ctx.strokeStyle = '#002200';
-              ctx.lineWidth = 0.5;
-              ctx.strokeRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
-            }
-          }
-        }
-
-        SKILLS.forEach((skill, i) => {
-          const sx = 10 + (i % 3) * 10;
-          const sy = 3  + Math.floor(i / 3) * 8;
-          if (visited[sy] && visited[sy][sx] && !player.skills.includes('skill' + i)) {
-            const screenX = Math.floor(sx * TILE_SIZE - camera.x);
-            const screenY = Math.floor(sy * TILE_SIZE - camera.y);
-            ctx.fillStyle = 'rgba(255,170,0,0.3)';
-            ctx.fillRect(screenX - 4, screenY - 4, TILE_SIZE + 8, TILE_SIZE + 8);
-            ctx.font = '16px monospace';
-            ctx.textAlign = 'center';
-            ctx.fillText(skill.icon, screenX + TILE_SIZE / 2, screenY + TILE_SIZE / 2 + 6);
-          }
-        });
-
-        PROJECTS.forEach(p => {
-          if (!visited[p.y] || !visited[p.y][p.x]) return;
-          const screenX = Math.floor(p.x * TILE_SIZE - camera.x);
-          const screenY = Math.floor(p.y * TILE_SIZE - camera.y);
-
-          ctx.fillStyle = '#002200';
-          ctx.fillRect(screenX + 2, screenY + 14, TILE_SIZE - 4, 8);
-
-          const glow = Math.sin(frameCount * 0.1) * 0.3 + 0.7;
-          ctx.fillStyle = `rgba(0,255,255,${glow})`;
-          ctx.beginPath();
-          ctx.moveTo(screenX + TILE_SIZE / 2, screenY + 4);
-          ctx.lineTo(screenX + TILE_SIZE - 4,  screenY + 12);
-          ctx.lineTo(screenX + TILE_SIZE / 2, screenY + 20);
-          ctx.lineTo(screenX + 4,             screenY + 12);
-          ctx.closePath();
-          ctx.fill();
-
-          ctx.fillStyle = COLORS.text;
-          ctx.font = '10px monospace';
-          ctx.textAlign = 'center';
-          ctx.fillText(p.id.toString(), screenX + TILE_SIZE / 2, screenY + 28);
-        });
-
-        enemies.forEach(e => {
-          if (!visited[e.y] || !visited[e.y][e.x]) return;
-          const screenX = Math.floor(e.x * TILE_SIZE - camera.x);
-          const screenY = Math.floor(e.y * TILE_SIZE - camera.y);
-
-          ctx.fillStyle = COLORS.enemyGlow;
-          ctx.fillRect(screenX - 2, screenY - 2, TILE_SIZE + 4, TILE_SIZE + 4);
-
-          ctx.fillStyle = COLORS.enemy;
-          ctx.beginPath();
-          ctx.arc(screenX + TILE_SIZE / 2, screenY + TILE_SIZE / 2, 7, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.strokeStyle = COLORS.enemy;
-          ctx.lineWidth = 2;
-          for (let i = 0; i < 4; i++) {
-            const angle = (frameCount * 0.2 + i * Math.PI / 2) % (Math.PI * 2);
-            ctx.beginPath();
-            ctx.moveTo(screenX + TILE_SIZE / 2, screenY + TILE_SIZE / 2);
-            ctx.lineTo(
-              screenX + TILE_SIZE / 2 + Math.cos(angle) * 9,
-              screenY + TILE_SIZE / 2 + Math.sin(angle) * 9
-            );
-            ctx.stroke();
-          }
-        });
-
-        particles.forEach(p => {
-          ctx.fillStyle = p.color;
-          ctx.fillRect(Math.floor(p.x - camera.x), Math.floor(p.y - camera.y), p.size, p.size);
-        });
-
-        const px = Math.floor(player.x * TILE_SIZE - camera.x);
-        const py = Math.floor(player.y * TILE_SIZE - camera.y);
-
-        const playerGlow = Math.sin(frameCount * 0.15) * 0.2 + 0.8;
-        ctx.fillStyle = `rgba(0,255,65,${playerGlow * 0.4})`;
-        ctx.fillRect(px - 4, py - 4, TILE_SIZE + 8, TILE_SIZE + 8);
-
-        ctx.fillStyle = COLORS.player;
-        ctx.fillRect(px + 4, py + 4, TILE_SIZE - 8, TILE_SIZE - 8);
-
-        ctx.fillStyle = '#000';
-        ctx.fillRect(px + 7,  py + 8, 4, 4);
-        ctx.fillRect(px + 15, py + 8, 4, 4);
-      }
-
-
-      /* ─── Input ─── */
-
-      function handleInput(e) {
-        if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); return; }
-        if (gameState === 'boot') return;
-        if (gameState === 'modal') {
-          if (e.key === 'Enter' || e.key === 'Escape') closeAllModals();
-          return;
-        }
-        if (gameState !== 'playing') return;
-
-        let dx = 0, dy = 0;
-
-        switch (e.key) {
-          case 'w': case 'W': case 'ArrowUp':    dy = -1; break;
-          case 's': case 'S': case 'ArrowDown':  dy =  1; break;
-          case 'a': case 'A': case 'ArrowLeft':  dx = -1; break;
-          case 'd': case 'D': case 'ArrowRight': dx =  1; break;
-          case ' ': case 'Enter': interact(); return;
-          case 'm': case 'M':    showMap();   return;
-          default: return;
-        }
-
-        e.preventDefault();
-        e.stopPropagation();
-        if (dx !== 0 || dy !== 0) movePlayer(dx, dy);
-      }
-
-
-      /* ─── Gameplay ─── */
-
-      function movePlayer(dx, dy) {
-        const newX = player.x + dx;
-        const newY = player.y + dy;
-
-        if (newX < 0 || newX >= MAP_WIDTH || newY < 0 || newY >= MAP_HEIGHT) return;
-        if (map[newY][newX] === 1) { addMessage('Blocked by wall!'); return; }
-
-        const enemy = enemies.find(e => e.x === newX && e.y === newY);
-        if (enemy) { attackEnemy(enemy); return; }
-
-        player.x = newX;
-        player.y = newY;
-        revealFog();
-        checkInteractions();
-      }
-
-      function attackEnemy(enemy) {
-        enemy.hp--;
-        createParticles(enemy.x, enemy.y, COLORS.enemy, 5);
-
-        if (enemy.hp <= 0) {
-          enemies = enemies.filter(e => e !== enemy);
-          player.xp += 10;
-          addMessage('Bug destroyed! +10 XP');
-          checkLevelUp();
-        } else {
-          addMessage(`Hit bug! (${enemy.hp} HP)`);
-          player.hp -= 5;
-          updateUI();
-          if (player.hp <= 0) gameOver();
-        }
-      }
-
-      function revealFog() {
-        for (let y = 0; y < MAP_HEIGHT; y++) {
-          for (let x = 0; x < MAP_WIDTH; x++) {
-            if (Math.sqrt((x - player.x) ** 2 + (y - player.y) ** 2) < 6) {
-              visited[y][x] = true;
-            }
-          }
-        }
-      }
-
-      function interact() { checkInteractions(); }
-
-      function checkInteractions() {
-        const project = PROJECTS.find(p => p.x === player.x && p.y === player.y);
-        if (project && !player.skills.includes(project.id)) { showProject(project); return; }
-
-        SKILLS.forEach((skill, i) => {
-          const sx = 10 + (i % 3) * 10;
-          const sy = 3  + Math.floor(i / 3) * 8;
-          if (player.x === sx && player.y === sy && !player.skills.includes('skill' + i)) {
-            gainSkill(i);
-          }
-        });
-      }
-
-      function showMap() {
-        const completed = player.skills.filter(s => typeof s === 'number').length;
-        addMessage(`Progress: ${completed}/${PROJECTS.length} projects | Pos: ${player.x},${player.y}`);
-      }
-
-      function gameOver() {
-        gameState = 'modal';
-        alert('GAME OVER\n\nYou ran out of HP! Refresh to try again.');
-      }
-
-      function checkLevelUp() {
-        if (player.xp >= player.maxXp) {
-          player.level++;
-          player.xp    -= player.maxXp;
-          player.maxXp  = Math.floor(player.maxXp * 1.3);
-          player.maxHp += 15;
-          player.hp     = player.maxHp;
-          addMessage(`★ LEVEL UP! Now Level ${player.level} ★`);
-          updateUI();
-        }
-      }
-
-
-      /* ─── Modals ─── */
-
-      function showProject(project) {
-        gameState = 'modal';
-        player.skills.push(project.id);
-        player.xp += 25;
-
-        document.getElementById('modalTitle').textContent      = project.name;
-        document.getElementById('modalType').textContent       = project.type;
-        document.getElementById('modalStack').textContent      = project.stack;
-        document.getElementById('modalStatus').textContent     = project.status;
-        document.getElementById('modalDifficulty').textContent = '★'.repeat(project.difficulty) + '☆'.repeat(5 - project.difficulty);
-        document.getElementById('modalDesc').textContent       = project.desc;
-        document.getElementById('modalImage').src              = project.img;
-        document.getElementById('modalLink').href              = project.link;
-
-        document.getElementById('projectModal').classList.add('active');
-        updateUI();
-        checkLevelUp();
-        addMessage(`Project ${project.id} completed! +25 XP`);
-
-        const completed = player.skills.filter(s => typeof s === 'number').length;
-        if (completed === PROJECTS.length) {
-          setTimeout(() => alert('🎉 PORTFOLIO COMPLETE! 🎉\n\nYou\'ve discovered all 6 projects!\nRefresh to play again.'), 500);
-        }
-      }
-
-      window.closeProjectModal = function() {
-        document.getElementById('projectModal').classList.remove('active');
-        gameState = 'playing';
-        setTimeout(() => canvas.focus(), 100);
-      };
-
-      function gainSkill(index) {
-        gameState = 'modal';
-        player.skills.push('skill' + index);
-        player.maxHp += 10;
-        player.hp = player.maxHp;
-
-        const skill = SKILLS[index];
-        document.getElementById('levelIcon').textContent = skill.icon;
-        document.getElementById('levelName').textContent = skill.name;
-        document.getElementById('levelDesc').textContent = skill.desc;
-
-        document.getElementById('levelModal').classList.add('active');
-        addMessage(`Acquired: ${skill.name}! Max HP +10`);
-        updateUI();
-      }
-
-      window.closeLevelModal = function() {
-        document.getElementById('levelModal').classList.remove('active');
-        gameState = 'playing';
-        setTimeout(() => canvas.focus(), 100);
-      };
-
-      function closeAllModals() {
-        document.querySelectorAll('.project-modal, .level-modal').forEach(m => m.classList.remove('active'));
-        gameState = 'playing';
-        setTimeout(() => canvas.focus(), 100);
-      }
-
-
-      /* ─── HUD ─── */
-
-      function updateUI() {
-        const hpPercent = player.hp / player.maxHp;
-        const hpFill    = Math.ceil(hpPercent * 10);
-        document.getElementById('hpDisplay').textContent = '█'.repeat(hpFill) + '░'.repeat(10 - hpFill);
-        document.getElementById('hpText').textContent    = `${player.hp}/${player.maxHp}`;
-
-        const xpPercent = player.xp / player.maxXp;
-        const xpFill    = Math.floor(xpPercent * 10);
-        document.getElementById('xpDisplay').textContent = '▓'.repeat(xpFill) + '░'.repeat(10 - xpFill);
-
-        document.getElementById('levelDisplay').textContent = player.level;
-
-        const completed = player.skills.filter(s => typeof s === 'number').length;
-        document.getElementById('skillList').textContent = `${completed}/${PROJECTS.length}`;
-      }
-
-      function addMessage(text) {
-        const log = document.getElementById('messageLog');
-        const msg = document.createElement('div');
-        msg.className   = 'message';
-        msg.textContent = '> ' + text;
-        log.appendChild(msg);
-        while (log.children.length > 5) log.removeChild(log.firstChild);
-        setTimeout(() => { if (msg.parentNode === log) log.removeChild(msg); }, 4000);
-      }
-
-      function createParticles(x, y, color, count) {
-        for (let i = 0; i < count; i++) {
-          particles.push({
-            x: x * TILE_SIZE + TILE_SIZE / 2,
-            y: y * TILE_SIZE + TILE_SIZE / 2,
-            vx:   (Math.random() - 0.5) * 4,
-            vy:   (Math.random() - 0.5) * 4,
-            life:  30,
-            color: color,
-            size:  Math.random() * 3 + 2
+      /* ── Terminal UI ── */
+      var isFullscreen = false;
+      var shell = document.getElementById('monitorShell');
+      var btn   = document.getElementById('fullscreenBtn');
+      var term  = document.getElementById('terminal');
+
+
+      /* ─── Render project list ─── */
+
+      function initTerminal() {
+        var list   = document.getElementById('termList');
+        var detail = document.getElementById('termDetail');
+
+        // Build project list
+        PROJECTS.forEach(function(p) {
+          var item = document.createElement('div');
+          item.className = 'term-item';
+          item.innerHTML =
+            '<div class="term-item-header">' +
+              '<span class="term-idx">[' + p.id + ']</span>' +
+              '<span class="term-name">' + p.name + '</span>' +
+              '<span class="term-badge">' + p.type + '</span>' +
+            '</div>' +
+            '<div class="term-stack-small">' + p.stack + '</div>';
+
+          item.addEventListener('click', function() {
+            document.querySelectorAll('.term-item').forEach(function(el) { el.classList.remove('active'); });
+            item.classList.add('active');
+            showDetail(p, detail);
           });
-        }
+          list.appendChild(item);
+        });
+
+        // Fullscreen
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (!isFullscreen) {
+            if      (shell.requestFullscreen)       shell.requestFullscreen();
+            else if (shell.webkitRequestFullscreen) shell.webkitRequestFullscreen();
+          } else {
+            if      (document.exitFullscreen)       document.exitFullscreen();
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+          }
+        });
+
+        document.getElementById('powBtn').addEventListener('click', function() {
+          var screen = document.getElementById('crtScreen');
+          var led    = document.getElementById('crtLed');
+          screen.classList.toggle('poff');
+          led.classList.toggle('off');
+        });
+
+        document.addEventListener('fullscreenchange',       handleFSChange);
+        document.addEventListener('webkitfullscreenchange', handleFSChange);
       }
 
-
-      /* ─── Power & Fullscreen ─── */
-
-      function togglePower() {
-        isPowered = !isPowered;
-        const screen = document.getElementById('crtScreen');
-        const led    = document.getElementById('crtLed');
-
-        if (!isPowered) {
-          screen.classList.add('poff');
-          led.classList.add('off');
-          addMessage('POWER OFF');
-        } else {
-          screen.classList.remove('poff');
-          led.classList.remove('off');
-          addMessage('POWER ON');
-        }
-      }
-
-      function toggleFullscreen() {
-        const shell = document.getElementById('monitorShell');
-        if (!isFullscreen) {
-          if      (shell.requestFullscreen)       shell.requestFullscreen();
-          else if (shell.webkitRequestFullscreen) shell.webkitRequestFullscreen();
-          else if (shell.mozRequestFullScreen)    shell.mozRequestFullScreen();
-        } else {
-          if      (document.exitFullscreen)        document.exitFullscreen();
-          else if (document.webkitExitFullscreen)  document.webkitExitFullscreen();
-          else if (document.mozCancelFullScreen)   document.mozCancelFullScreen();
-        }
-      }
-
-      function handleFullscreenChange() {
-        const shell = document.getElementById('monitorShell');
-        const btn   = document.getElementById('fullscreenBtn');
-
-        isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
-
+      function handleFSChange() {
+        isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
         if (isFullscreen) {
           shell.classList.add('fullscreen');
-          btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg><span>EXIT</span>`;
+          term.style.height = '100%';
+          btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg><span>EXIT</span>';
         } else {
           shell.classList.remove('fullscreen');
-          btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><span>FULLSCREEN</span>`;
+          term.style.height = '600px';
+          btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><span>FULLSCREEN</span>';
         }
-
-        setTimeout(resizeCanvas, 100);
       }
+
+
+      /* ─── Project detail renderer ─── */
+
+      function showDetail(p, detail) {
+        function stars(n) { return '★'.repeat(n) + '☆'.repeat(5 - n); }
+        detail.innerHTML =
+          '<div class="term-detail-title">' + p.name + '</div>' +
+          '<img class="term-detail-img" src="' + p.img + '" alt="' + p.name + '">' +
+          '<div class="term-detail-meta">' +
+            '<div class="term-meta-row"><span class="term-meta-key">TYPE:</span><span class="term-meta-val">' + p.type + '</span></div>' +
+            '<div class="term-meta-row"><span class="term-meta-key">STATUS:</span><span class="term-meta-val">' + p.status + '</span></div>' +
+            '<div class="term-meta-row"><span class="term-meta-key">STACK:</span><span class="term-meta-val">' + p.stack + '</span></div>' +
+            '<div class="term-meta-row"><span class="term-meta-key">DIFFICULTY:</span><span class="term-meta-val">' + stars(p.difficulty) + '</span></div>' +
+          '</div>' +
+          '<div class="term-detail-desc">' + p.desc + '</div>' +
+          '<a href="' + p.link + '" target="_blank" rel="noopener" class="term-detail-link">[ VIEW PROJECT ]</a>';
+      }
+
 
 
       /* ─── Startup ─── */
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initGame);
+        document.addEventListener('DOMContentLoaded', initTerminal);
       } else {
-        initGame();
+        initTerminal();
       }
 
     })();
